@@ -1,4 +1,4 @@
-grammar RCprog;
+grammar RCcode;
 
 options{
 	language = Cpp;
@@ -23,7 +23,6 @@ stat
  | if_stat 					# ifStat
  | for_stat 				# forStat
  | while_stat 				# whileStat
- | do_stat 					# doStat
  | libcall_stat 			# libcallStat
  | call_stat				# callStat 
  ;  
@@ -34,7 +33,7 @@ robot_stat
  | MOVC ID ',' ID ',' ID ',' ID ';' 	# movcExpr
  | MOVS ID ',' ID ',' ID ',' ID ';'		# movsExpr
  | SHIFTON ID ',' ID ';'				# shiftonExpr
- | SHIFTOFF; 							# shiftoffExpr
+ | SHIFTOFF';' 							# shiftoffExpr
  ;
 
 data_stat
@@ -61,29 +60,56 @@ call_stat
  ;
 
 assign_stat
- : ID ASSIGN expr   	# assignExpr 
+ : ID ASSIGN boolval ';' 		# assignExpr1
+ | ID ASSIGN numorid op=('+'|'-'|'*'|'/'|'=='|'>='|'<='|'>'|'<'|'<>') numorid ';' # assignExpr2
+ | ID ASSIGN libcall_stat ';'  	# assignExpr3
+ | ID ASSIGN numorid ';'		# assignExpr4
+ ;
+
+goto_stat
+ : GOTO LABEL ';'			# gotoExpr
  ;
 
 if_stat  
- : IF expr THEN block (elseif_stat)* (else_stat)? END_IF	# ifExpr
+ : IF numorid RELOP numorid THEN block (elseif_stat)* (else_stat)? ENDIF ';' 	# ifExpr1
+ | IF boolval THEN block (elseif_stat)* (else_stat)? ENDIF ';'				 	# ifExpr2
+ | IF ID THEN block (elseif_stat)* (else_stat)? ENDIF ';'				 		# ifExpr3
  ;  
   
 elseif_stat
- : ELSE IF expr THEN block 				# elseifExpr
+ : ELSEIF numorid RELOP numorid THEN block ';'				# elseifExpr1
+ | ELSEIF boolval THEN block ';'							# elseifExpr2
+ | ELSEIF ID THEN block ';'									# elseifExpr3
  ;
 
 else_stat
- : ELSE block   						# elseExpr
+ : ELSE block   ';'							# elseExpr
+ ;
+
+for_stat
+ : FOR ID ASSIGN NUM TO NUM BY NUM block ENDFOR ';' 		# forExpr
+ ;
+
+while_stat
+ : WHILE numorid RELOP numorid DO block ENDWL ';'   		# whileExpr1
+ | WHILE boolval DO block ENDWL ';' 						# whileExpr2
+ | WHILE ID DO block ENDWL ';' 								# whileExpr3 
+ ;
+
+
+boolval
+ : TRUE 							# trueExpr
+ | FALSE 							# falseExpr
  ;
 
 libcall_stat
- : ID '(' params ')'			# libcallExpr
+ : ID '(' params ')'				# libcallExpr
  ;
 
-expr  
- : numorid 							# variable
- | libcall_stat						# call
- ;  
+params
+ : numorid? (',' numorid)* 			# paramlist
+ ;
+ 
 
 numorid
  : NUM 						# numExpr
@@ -103,9 +129,24 @@ oneinst
  | BREAK 		# breakExpr
  ;
 
+GOTO : 'GOTO';
 
+IF : 'IF' ;
+THEN : 'THEN';
+ELSEIF : 'ELSEIF';
+ELSE : 'ELSE';
+ENDIF : 'ENDIF';
 
 ASSIGN : '=';  
+
+WHILE : 'WHILE';
+DO : 'DO';
+ENDWL : 'ENDWL';
+
+FOR : 'FOR';
+TO : 'TO';
+BY : 'BY';
+ENDFOR : 'ENDFOR';
 
 TRUE : 'TRUE';
 FALSE : 'FALSE';
@@ -126,7 +167,10 @@ DELAY : 'DELAY';
 SETOUT : 'SETOUT';
 DIN : 'DIN';
 
-LABEL : 'L';
+LABEL 
+ : 'L' [0-9]+
+ ;
+
 RET : 'RET';
 NOP : 'NOP';
 PAUSE : 'PAUSE';
@@ -164,7 +208,7 @@ RELOP
 
 TIME 
  : 'T' [0-9]+ '.' [0-9]* 
- : 'T' '.' [0-9]+
+ | 'T' '.' [0-9]+
  | 'T' [0-9]+
  ; 
 
