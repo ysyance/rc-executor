@@ -68,65 +68,12 @@ public:
         return result;
     }
 
-  virtual antlrcpp::Any visitRobotStat(RCcodeParser::RobotStatContext *ctx) override {
-  	LOGGER_INF("RobotStat");
-    return visitChildren(ctx);
-  }
+    virtual antlrcpp::Any visitStat(RCcodeParser::StatContext *ctx) override {
+        LOGGER_INF("Stat");
+        return visitChildren(ctx);
+    }
 
-  virtual antlrcpp::Any visitDataStat(RCcodeParser::DataStatContext *ctx) override {
-  	LOGGER_INF("DataStat");
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitSignalStat(RCcodeParser::SignalStatContext *ctx) override {
-  	LOGGER_INF("SignalStat");
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitMathStat(RCcodeParser::MathStatContext *ctx) override {
-  	LOGGER_INF("MathStat");
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitOnewordStat(RCcodeParser::OnewordStatContext *ctx) override {
-  	LOGGER_INF("OnewordStat");
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitAssignStat(RCcodeParser::AssignStatContext *ctx) override {
-  	LOGGER_INF("AssignStat");
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitGotoStat(RCcodeParser::GotoStatContext *ctx) override {
-  	LOGGER_INF("GotoStat");
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitIfStat(RCcodeParser::IfStatContext *ctx) override {
-  	LOGGER_INF("IfStat");
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitForStat(RCcodeParser::ForStatContext *ctx) override {
-  	LOGGER_INF("ForStat");
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitWhileStat(RCcodeParser::WhileStatContext *ctx) override {
-  	LOGGER_INF("WhileStat");
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitLibcallStat(RCcodeParser::LibcallStatContext *ctx) override {
-  	LOGGER_INF("LibcallStat");
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitCallStat(RCcodeParser::CallStatContext *ctx) override {
-  	LOGGER_INF("CallStat");
-    return visitChildren(ctx);
-  }
+  
 
   virtual antlrcpp::Any visitMovjExpr(RCcodeParser::MovjExprContext *ctx) override {
   	LOGGER_INF("MovjExpr");
@@ -143,7 +90,7 @@ public:
 
     std::string strPoint = ctx->ID(0)->getText();
     if(dataIndexMap.find(strPoint) != dataIndexMap.end()) {
-        uint8_t t = addrspace[dataIndexMap[strPoint]].type
+        uint8_t t = addrspace[dataIndexMap[strPoint]].type;
         if(t == TJTPOSE || t == TTRPOSE) {
             tempStat->endpointIndex = dataIndexMap[strPoint];
         } else {
@@ -170,9 +117,19 @@ public:
     {
         int col = ctx->ID(2)->getSymbol()->getCharPositionInLine();
         throw rc_wrongparam_exception(line, col, strZX);
+    } else {
+        if(strZX == "Z0") tempStat->Z = RCRobotStatement::Z0;
+        if(strZX == "Z1") tempStat->Z = RCRobotStatement::Z1;
+        if(strZX == "Z2") tempStat->Z = RCRobotStatement::Z2;
+        if(strZX == "Z3") tempStat->Z = RCRobotStatement::Z3;
+        if(strZX == "Z4") tempStat->Z = RCRobotStatement::Z4;
+        if(strZX == "Z5") tempStat->Z = RCRobotStatement::Z5;
+        if(strZX == "Z6") tempStat->Z = RCRobotStatement::Z6;
+        if(strZX == "Z7") tempStat->Z = RCRobotStatement::Z7;
+        if(strZX == "Z8") tempStat->Z = RCRobotStatement::Z8;
     }
 
-    return tempStat;
+    return dynamic_cast<RCBaseStatement*>(tempStat);
   }
 
   virtual antlrcpp::Any visitMovlExpr(RCcodeParser::MovlExprContext *ctx) override {

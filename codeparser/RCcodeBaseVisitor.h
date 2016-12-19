@@ -23,51 +23,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitRobotStat(RCcodeParser::RobotStatContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitDataStat(RCcodeParser::DataStatContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitSignalStat(RCcodeParser::SignalStatContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitMathStat(RCcodeParser::MathStatContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitOnewordStat(RCcodeParser::OnewordStatContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitAssignStat(RCcodeParser::AssignStatContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitGotoStat(RCcodeParser::GotoStatContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitIfStat(RCcodeParser::IfStatContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitForStat(RCcodeParser::ForStatContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitWhileStat(RCcodeParser::WhileStatContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitLibcallStat(RCcodeParser::LibcallStatContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitCallStat(RCcodeParser::CallStatContext *ctx) override {
+  virtual antlrcpp::Any visitStat(RCcodeParser::StatContext *ctx) override {
     return visitChildren(ctx);
   }
 

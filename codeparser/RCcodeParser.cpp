@@ -188,183 +188,66 @@ RCcodeParser::StatContext::StatContext(ParserRuleContext *parent, size_t invokin
   : ParserRuleContext(parent, invokingState) {
 }
 
+RCcodeParser::Robot_statContext* RCcodeParser::StatContext::robot_stat() {
+  return getRuleContext<RCcodeParser::Robot_statContext>(0);
+}
+
+RCcodeParser::Data_statContext* RCcodeParser::StatContext::data_stat() {
+  return getRuleContext<RCcodeParser::Data_statContext>(0);
+}
+
+RCcodeParser::Signal_statContext* RCcodeParser::StatContext::signal_stat() {
+  return getRuleContext<RCcodeParser::Signal_statContext>(0);
+}
+
+RCcodeParser::Math_statContext* RCcodeParser::StatContext::math_stat() {
+  return getRuleContext<RCcodeParser::Math_statContext>(0);
+}
+
+RCcodeParser::Oneinst_statContext* RCcodeParser::StatContext::oneinst_stat() {
+  return getRuleContext<RCcodeParser::Oneinst_statContext>(0);
+}
+
+RCcodeParser::Assign_statContext* RCcodeParser::StatContext::assign_stat() {
+  return getRuleContext<RCcodeParser::Assign_statContext>(0);
+}
+
+RCcodeParser::Goto_statContext* RCcodeParser::StatContext::goto_stat() {
+  return getRuleContext<RCcodeParser::Goto_statContext>(0);
+}
+
+RCcodeParser::If_statContext* RCcodeParser::StatContext::if_stat() {
+  return getRuleContext<RCcodeParser::If_statContext>(0);
+}
+
+RCcodeParser::For_statContext* RCcodeParser::StatContext::for_stat() {
+  return getRuleContext<RCcodeParser::For_statContext>(0);
+}
+
+RCcodeParser::While_statContext* RCcodeParser::StatContext::while_stat() {
+  return getRuleContext<RCcodeParser::While_statContext>(0);
+}
+
+RCcodeParser::Libcall_statContext* RCcodeParser::StatContext::libcall_stat() {
+  return getRuleContext<RCcodeParser::Libcall_statContext>(0);
+}
+
+RCcodeParser::Call_statContext* RCcodeParser::StatContext::call_stat() {
+  return getRuleContext<RCcodeParser::Call_statContext>(0);
+}
+
 
 size_t RCcodeParser::StatContext::getRuleIndex() const {
   return RCcodeParser::RuleStat;
 }
 
-void RCcodeParser::StatContext::copyFrom(StatContext *ctx) {
-  ParserRuleContext::copyFrom(ctx);
-}
-
-//----------------- WhileStatContext ------------------------------------------------------------------
-
-RCcodeParser::While_statContext* RCcodeParser::WhileStatContext::while_stat() {
-  return getRuleContext<RCcodeParser::While_statContext>(0);
-}
-
-RCcodeParser::WhileStatContext::WhileStatContext(StatContext *ctx) { copyFrom(ctx); }
-
-antlrcpp::Any RCcodeParser::WhileStatContext::accept(tree::ParseTreeVisitor *visitor) {
+antlrcpp::Any RCcodeParser::StatContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<RCcodeVisitor*>(visitor))
-    return parserVisitor->visitWhileStat(this);
+    return parserVisitor->visitStat(this);
   else
     return visitor->visitChildren(this);
 }
-//----------------- ForStatContext ------------------------------------------------------------------
 
-RCcodeParser::For_statContext* RCcodeParser::ForStatContext::for_stat() {
-  return getRuleContext<RCcodeParser::For_statContext>(0);
-}
-
-RCcodeParser::ForStatContext::ForStatContext(StatContext *ctx) { copyFrom(ctx); }
-
-antlrcpp::Any RCcodeParser::ForStatContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<RCcodeVisitor*>(visitor))
-    return parserVisitor->visitForStat(this);
-  else
-    return visitor->visitChildren(this);
-}
-//----------------- AssignStatContext ------------------------------------------------------------------
-
-RCcodeParser::Assign_statContext* RCcodeParser::AssignStatContext::assign_stat() {
-  return getRuleContext<RCcodeParser::Assign_statContext>(0);
-}
-
-RCcodeParser::AssignStatContext::AssignStatContext(StatContext *ctx) { copyFrom(ctx); }
-
-antlrcpp::Any RCcodeParser::AssignStatContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<RCcodeVisitor*>(visitor))
-    return parserVisitor->visitAssignStat(this);
-  else
-    return visitor->visitChildren(this);
-}
-//----------------- GotoStatContext ------------------------------------------------------------------
-
-RCcodeParser::Goto_statContext* RCcodeParser::GotoStatContext::goto_stat() {
-  return getRuleContext<RCcodeParser::Goto_statContext>(0);
-}
-
-RCcodeParser::GotoStatContext::GotoStatContext(StatContext *ctx) { copyFrom(ctx); }
-
-antlrcpp::Any RCcodeParser::GotoStatContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<RCcodeVisitor*>(visitor))
-    return parserVisitor->visitGotoStat(this);
-  else
-    return visitor->visitChildren(this);
-}
-//----------------- MathStatContext ------------------------------------------------------------------
-
-RCcodeParser::Math_statContext* RCcodeParser::MathStatContext::math_stat() {
-  return getRuleContext<RCcodeParser::Math_statContext>(0);
-}
-
-RCcodeParser::MathStatContext::MathStatContext(StatContext *ctx) { copyFrom(ctx); }
-
-antlrcpp::Any RCcodeParser::MathStatContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<RCcodeVisitor*>(visitor))
-    return parserVisitor->visitMathStat(this);
-  else
-    return visitor->visitChildren(this);
-}
-//----------------- RobotStatContext ------------------------------------------------------------------
-
-RCcodeParser::Robot_statContext* RCcodeParser::RobotStatContext::robot_stat() {
-  return getRuleContext<RCcodeParser::Robot_statContext>(0);
-}
-
-RCcodeParser::RobotStatContext::RobotStatContext(StatContext *ctx) { copyFrom(ctx); }
-
-antlrcpp::Any RCcodeParser::RobotStatContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<RCcodeVisitor*>(visitor))
-    return parserVisitor->visitRobotStat(this);
-  else
-    return visitor->visitChildren(this);
-}
-//----------------- IfStatContext ------------------------------------------------------------------
-
-RCcodeParser::If_statContext* RCcodeParser::IfStatContext::if_stat() {
-  return getRuleContext<RCcodeParser::If_statContext>(0);
-}
-
-RCcodeParser::IfStatContext::IfStatContext(StatContext *ctx) { copyFrom(ctx); }
-
-antlrcpp::Any RCcodeParser::IfStatContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<RCcodeVisitor*>(visitor))
-    return parserVisitor->visitIfStat(this);
-  else
-    return visitor->visitChildren(this);
-}
-//----------------- DataStatContext ------------------------------------------------------------------
-
-RCcodeParser::Data_statContext* RCcodeParser::DataStatContext::data_stat() {
-  return getRuleContext<RCcodeParser::Data_statContext>(0);
-}
-
-RCcodeParser::DataStatContext::DataStatContext(StatContext *ctx) { copyFrom(ctx); }
-
-antlrcpp::Any RCcodeParser::DataStatContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<RCcodeVisitor*>(visitor))
-    return parserVisitor->visitDataStat(this);
-  else
-    return visitor->visitChildren(this);
-}
-//----------------- SignalStatContext ------------------------------------------------------------------
-
-RCcodeParser::Signal_statContext* RCcodeParser::SignalStatContext::signal_stat() {
-  return getRuleContext<RCcodeParser::Signal_statContext>(0);
-}
-
-RCcodeParser::SignalStatContext::SignalStatContext(StatContext *ctx) { copyFrom(ctx); }
-
-antlrcpp::Any RCcodeParser::SignalStatContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<RCcodeVisitor*>(visitor))
-    return parserVisitor->visitSignalStat(this);
-  else
-    return visitor->visitChildren(this);
-}
-//----------------- LibcallStatContext ------------------------------------------------------------------
-
-RCcodeParser::Libcall_statContext* RCcodeParser::LibcallStatContext::libcall_stat() {
-  return getRuleContext<RCcodeParser::Libcall_statContext>(0);
-}
-
-RCcodeParser::LibcallStatContext::LibcallStatContext(StatContext *ctx) { copyFrom(ctx); }
-
-antlrcpp::Any RCcodeParser::LibcallStatContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<RCcodeVisitor*>(visitor))
-    return parserVisitor->visitLibcallStat(this);
-  else
-    return visitor->visitChildren(this);
-}
-//----------------- CallStatContext ------------------------------------------------------------------
-
-RCcodeParser::Call_statContext* RCcodeParser::CallStatContext::call_stat() {
-  return getRuleContext<RCcodeParser::Call_statContext>(0);
-}
-
-RCcodeParser::CallStatContext::CallStatContext(StatContext *ctx) { copyFrom(ctx); }
-
-antlrcpp::Any RCcodeParser::CallStatContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<RCcodeVisitor*>(visitor))
-    return parserVisitor->visitCallStat(this);
-  else
-    return visitor->visitChildren(this);
-}
-//----------------- OnewordStatContext ------------------------------------------------------------------
-
-RCcodeParser::Oneinst_statContext* RCcodeParser::OnewordStatContext::oneinst_stat() {
-  return getRuleContext<RCcodeParser::Oneinst_statContext>(0);
-}
-
-RCcodeParser::OnewordStatContext::OnewordStatContext(StatContext *ctx) { copyFrom(ctx); }
-
-antlrcpp::Any RCcodeParser::OnewordStatContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<RCcodeVisitor*>(visitor))
-    return parserVisitor->visitOnewordStat(this);
-  else
-    return visitor->visitChildren(this);
-}
 RCcodeParser::StatContext* RCcodeParser::stat() {
   StatContext *_localctx = _tracker.createInstance<StatContext>(_ctx, getState());
   enterRule(_localctx, 4, RCcodeParser::RuleStat);
@@ -377,7 +260,6 @@ RCcodeParser::StatContext* RCcodeParser::stat() {
     _errHandler->sync(this);
     switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 1, _ctx)) {
     case 1: {
-      _localctx = dynamic_cast<StatContext *>(_tracker.createInstance<RCcodeParser::RobotStatContext>(_localctx));
       enterOuterAlt(_localctx, 1);
       setState(53);
       robot_stat();
@@ -385,7 +267,6 @@ RCcodeParser::StatContext* RCcodeParser::stat() {
     }
 
     case 2: {
-      _localctx = dynamic_cast<StatContext *>(_tracker.createInstance<RCcodeParser::DataStatContext>(_localctx));
       enterOuterAlt(_localctx, 2);
       setState(54);
       data_stat();
@@ -393,7 +274,6 @@ RCcodeParser::StatContext* RCcodeParser::stat() {
     }
 
     case 3: {
-      _localctx = dynamic_cast<StatContext *>(_tracker.createInstance<RCcodeParser::SignalStatContext>(_localctx));
       enterOuterAlt(_localctx, 3);
       setState(55);
       signal_stat();
@@ -401,7 +281,6 @@ RCcodeParser::StatContext* RCcodeParser::stat() {
     }
 
     case 4: {
-      _localctx = dynamic_cast<StatContext *>(_tracker.createInstance<RCcodeParser::MathStatContext>(_localctx));
       enterOuterAlt(_localctx, 4);
       setState(56);
       math_stat();
@@ -409,7 +288,6 @@ RCcodeParser::StatContext* RCcodeParser::stat() {
     }
 
     case 5: {
-      _localctx = dynamic_cast<StatContext *>(_tracker.createInstance<RCcodeParser::OnewordStatContext>(_localctx));
       enterOuterAlt(_localctx, 5);
       setState(57);
       oneinst_stat();
@@ -417,7 +295,6 @@ RCcodeParser::StatContext* RCcodeParser::stat() {
     }
 
     case 6: {
-      _localctx = dynamic_cast<StatContext *>(_tracker.createInstance<RCcodeParser::AssignStatContext>(_localctx));
       enterOuterAlt(_localctx, 6);
       setState(58);
       assign_stat();
@@ -425,7 +302,6 @@ RCcodeParser::StatContext* RCcodeParser::stat() {
     }
 
     case 7: {
-      _localctx = dynamic_cast<StatContext *>(_tracker.createInstance<RCcodeParser::GotoStatContext>(_localctx));
       enterOuterAlt(_localctx, 7);
       setState(59);
       goto_stat();
@@ -433,7 +309,6 @@ RCcodeParser::StatContext* RCcodeParser::stat() {
     }
 
     case 8: {
-      _localctx = dynamic_cast<StatContext *>(_tracker.createInstance<RCcodeParser::IfStatContext>(_localctx));
       enterOuterAlt(_localctx, 8);
       setState(60);
       if_stat();
@@ -441,7 +316,6 @@ RCcodeParser::StatContext* RCcodeParser::stat() {
     }
 
     case 9: {
-      _localctx = dynamic_cast<StatContext *>(_tracker.createInstance<RCcodeParser::ForStatContext>(_localctx));
       enterOuterAlt(_localctx, 9);
       setState(61);
       for_stat();
@@ -449,7 +323,6 @@ RCcodeParser::StatContext* RCcodeParser::stat() {
     }
 
     case 10: {
-      _localctx = dynamic_cast<StatContext *>(_tracker.createInstance<RCcodeParser::WhileStatContext>(_localctx));
       enterOuterAlt(_localctx, 10);
       setState(62);
       while_stat();
@@ -457,7 +330,6 @@ RCcodeParser::StatContext* RCcodeParser::stat() {
     }
 
     case 11: {
-      _localctx = dynamic_cast<StatContext *>(_tracker.createInstance<RCcodeParser::LibcallStatContext>(_localctx));
       enterOuterAlt(_localctx, 11);
       setState(63);
       libcall_stat();
@@ -465,7 +337,6 @@ RCcodeParser::StatContext* RCcodeParser::stat() {
     }
 
     case 12: {
-      _localctx = dynamic_cast<StatContext *>(_tracker.createInstance<RCcodeParser::CallStatContext>(_localctx));
       enterOuterAlt(_localctx, 12);
       setState(64);
       call_stat();

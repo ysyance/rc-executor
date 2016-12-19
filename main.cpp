@@ -39,25 +39,25 @@ int main() {
 	RC_SymbolTable symbolTable(addrspace, stringpool, apaddr, cpaddr, tooladdr, cooraddr,
 								dataIndexMap, constIndexMap, funcMap);
 
-	// std::ifstream datafile("test/sample.tid");     
-	// ANTLRInputStream datainput(datafile);     
+	std::ifstream datafile("test/sample.tid");     
+	ANTLRInputStream datainput(datafile);     
 	
-	// RCdataLexer datalexer(&datainput);
-	// CommonTokenStream datatokens(&datalexer);
+	RCdataLexer datalexer(&datainput);
+	CommonTokenStream datatokens(&datalexer);
 
-	// RCdataParser dataparser(&datatokens);
-	// ParseTree *datatree = dataparser.prog();
+	RCdataParser dataparser(&datatokens);
+	ParseTree *datatree = dataparser.prog();
 
-	// std::cout << datatree->toStringTree(&dataparser) << std::endl;
+	std::cout << datatree->toStringTree(&dataparser) << std::endl;
 
-	// RCdataGenerator DG(symbolTable);
-	// try{
-	// 	DG.visit(datatree);
-	// } catch(rc_exception &e) {
-	// 	e.what();
-	// } catch(std::exception &e) {
-	// 	std::cout << "C++ runtime exception" << std::endl;
-	// }
+	RCdataGenerator DG(symbolTable);
+	try{
+		DG.visit(datatree);
+	} catch(rc_exception &e) {
+		e.what();
+	} catch(std::exception &e) {
+		std::cout << "C++ runtime exception" << std::endl;
+	}
 	
 	// Utility::printfDataIndexMap(dataIndexMap);
 	// Utility::printfStringPool(stringpool);
@@ -81,8 +81,15 @@ int main() {
 	CodeModel code;
 
 	RCcodeGenerator CG(code, symbolTable);
-	CG.visit(codeTree);
+	try {
+		CG.visit(codeTree);
+	} catch(rc_exception &e) {
+		e.what();
+	} catch(std::exception &e) {
+		std::cout << "C++ runtime exception" << std::endl;
+	}
 
+	Utility::printfCodeShadow(code);
 
 	return 0;
 }

@@ -23,29 +23,7 @@ public:
 
     virtual antlrcpp::Any visitStatBlock(RCcodeParser::StatBlockContext *context) = 0;
 
-    virtual antlrcpp::Any visitRobotStat(RCcodeParser::RobotStatContext *context) = 0;
-
-    virtual antlrcpp::Any visitDataStat(RCcodeParser::DataStatContext *context) = 0;
-
-    virtual antlrcpp::Any visitSignalStat(RCcodeParser::SignalStatContext *context) = 0;
-
-    virtual antlrcpp::Any visitMathStat(RCcodeParser::MathStatContext *context) = 0;
-
-    virtual antlrcpp::Any visitOnewordStat(RCcodeParser::OnewordStatContext *context) = 0;
-
-    virtual antlrcpp::Any visitAssignStat(RCcodeParser::AssignStatContext *context) = 0;
-
-    virtual antlrcpp::Any visitGotoStat(RCcodeParser::GotoStatContext *context) = 0;
-
-    virtual antlrcpp::Any visitIfStat(RCcodeParser::IfStatContext *context) = 0;
-
-    virtual antlrcpp::Any visitForStat(RCcodeParser::ForStatContext *context) = 0;
-
-    virtual antlrcpp::Any visitWhileStat(RCcodeParser::WhileStatContext *context) = 0;
-
-    virtual antlrcpp::Any visitLibcallStat(RCcodeParser::LibcallStatContext *context) = 0;
-
-    virtual antlrcpp::Any visitCallStat(RCcodeParser::CallStatContext *context) = 0;
+    virtual antlrcpp::Any visitStat(RCcodeParser::StatContext *context) = 0;
 
     virtual antlrcpp::Any visitMovjExpr(RCcodeParser::MovjExprContext *context) = 0;
 

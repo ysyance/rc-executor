@@ -19,6 +19,10 @@ public:
 	{}
 
 	virtual int execute(void *cookie) = 0;
+	virtual void printInfo() {
+		std::cout << "RCBaseStatement" << std::endl;
+	}
+
 public:
 	RCAddressSpace &addrspace;     // addrspace[0] is the returned value of all the library function  in global
 	
@@ -46,7 +50,7 @@ public:
 											endpointIndex(0),
 											midpointIndex(0),
 											speed(0),
-											z(Z0)
+											Z(Z0)
 											 {}
 public:
 	virtual int execute(void *cookie) override {
@@ -72,7 +76,14 @@ public:
 	uint32_t endpointIndex;
 	uint32_t midpointIndex;
 	uint32_t speed;
-	RESO_LEVEL z;
+	RESO_LEVEL Z;
+
+public:
+	virtual void printInfo() {
+		std::cout << "[Line " << lineno << "]";
+		if(type == MOVJ) 
+			std::cout << " MOVJ" << " V" << speed << " Z" << Z << std::endl;
+	}
 
 };
 

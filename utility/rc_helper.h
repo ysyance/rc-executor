@@ -3,6 +3,7 @@
 #include "rc_innerdata.h"
 #include "unordered_map"
 #include "rc_exception.h"
+#include "RCRuntimeModel.h"
 
 
 class Utility {
@@ -87,6 +88,14 @@ public:
 		std::cout << std::endl;
 	}
 
+
+	static void printfCodeShadow(CodeModel &code) {
+		std::cout << "|< ----------- RC code shadow ------------ >|" << std::endl;
+		for(int i = 0; i < code.size(); i ++) {
+			code[i]->printInfo();
+		}
+	}
+
 public:
 	static int parseInt(std::string &str) {
 		if(checkInt(str)) {
@@ -118,7 +127,7 @@ public:
 		if(size < 2) return -1;
 		for(int i = 0; i < size; i ++) {
 			if(i == 0 && str[i] != 'V')  return -1;
-			if(i != 0 && (str[i] < '0' || str[i] > '9')) return -1 
+			if(i != 0 && (str[i] < '0' || str[i] > '9')) return -1;
 		}
 		return std::stoi(str.substr(1));
 	}

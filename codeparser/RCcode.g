@@ -13,18 +13,18 @@ block
  ;  
   
 stat 
- : robot_stat  				# robotStat 
- | data_stat				# dataStat
- | signal_stat  			# signalStat
- | math_stat				# mathStat
- | oneinst_stat				# onewordStat
- | assign_stat 				# assignStat
- | goto_stat				# gotoStat
- | if_stat 					# ifStat
- | for_stat 				# forStat
- | while_stat 				# whileStat
- | libcall_stat 			# libcallStat
- | call_stat				# callStat 
+ : robot_stat  				
+ | data_stat				
+ | signal_stat  			
+ | math_stat				
+ | oneinst_stat				
+ | assign_stat 				
+ | goto_stat				
+ | if_stat 					
+ | for_stat 				
+ | while_stat 				
+ | libcall_stat 			
+ | call_stat				
  ;  
 
 robot_stat

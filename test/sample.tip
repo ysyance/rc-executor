@@ -1,4 +1,6 @@
-# MOVJ P001, V50, Z0;
+
+
+MOVJ P001, V50, Z0;
 # MOVL BP001, V1000, Z2;
 # MOVC P001, P002, V1000, Z2;
 # MOVS P001, P002, V500, Z3;
@@ -52,7 +54,7 @@
 # R001 = 10;
 # B001 = TRUE;
 # D001 = R001 + 10;
-D002 = sin(10);
+# D002 = sin(10);
 
 # S001 = "StringDEMO";
 
@@ -85,7 +87,7 @@ D002 = sin(10);
 # 	MOVL BP001, V10, Z1;
 # ENDWL;
 
-COMM(10);
+# COMM(10);
 
 
 

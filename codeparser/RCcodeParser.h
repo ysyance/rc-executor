@@ -117,110 +117,22 @@ public:
   class  StatContext : public antlr4::ParserRuleContext {
   public:
     StatContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-   
-    StatContext() : antlr4::ParserRuleContext() { }
-    void copyFrom(StatContext *context);
-    using antlr4::ParserRuleContext::copyFrom;
-
     virtual size_t getRuleIndex() const override;
-
-   
-  };
-
-  class  WhileStatContext : public StatContext {
-  public:
-    WhileStatContext(StatContext *ctx);
-
-    While_statContext *while_stat();
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  ForStatContext : public StatContext {
-  public:
-    ForStatContext(StatContext *ctx);
-
-    For_statContext *for_stat();
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  AssignStatContext : public StatContext {
-  public:
-    AssignStatContext(StatContext *ctx);
-
-    Assign_statContext *assign_stat();
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  GotoStatContext : public StatContext {
-  public:
-    GotoStatContext(StatContext *ctx);
-
-    Goto_statContext *goto_stat();
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  MathStatContext : public StatContext {
-  public:
-    MathStatContext(StatContext *ctx);
-
-    Math_statContext *math_stat();
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  RobotStatContext : public StatContext {
-  public:
-    RobotStatContext(StatContext *ctx);
-
     Robot_statContext *robot_stat();
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  IfStatContext : public StatContext {
-  public:
-    IfStatContext(StatContext *ctx);
-
-    If_statContext *if_stat();
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  DataStatContext : public StatContext {
-  public:
-    DataStatContext(StatContext *ctx);
-
     Data_statContext *data_stat();
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  SignalStatContext : public StatContext {
-  public:
-    SignalStatContext(StatContext *ctx);
-
     Signal_statContext *signal_stat();
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  LibcallStatContext : public StatContext {
-  public:
-    LibcallStatContext(StatContext *ctx);
-
-    Libcall_statContext *libcall_stat();
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  CallStatContext : public StatContext {
-  public:
-    CallStatContext(StatContext *ctx);
-
-    Call_statContext *call_stat();
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  OnewordStatContext : public StatContext {
-  public:
-    OnewordStatContext(StatContext *ctx);
-
+    Math_statContext *math_stat();
     Oneinst_statContext *oneinst_stat();
+    Assign_statContext *assign_stat();
+    Goto_statContext *goto_stat();
+    If_statContext *if_stat();
+    For_statContext *for_stat();
+    While_statContext *while_stat();
+    Libcall_statContext *libcall_stat();
+    Call_statContext *call_stat();
+
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
   };
 
   StatContext* stat();
