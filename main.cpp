@@ -15,6 +15,7 @@
 #include "RCcodeLexer.h"
 #include "RCcodeParser.h"
 #include "RCcodeGenerator.h"
+#include "RCRuntimeModel.h"
 
 
 using namespace antlr4;
@@ -77,7 +78,9 @@ int main() {
 
 	std::cout << codeTree->toStringTree(&codeParser) << std::endl;
 
-	RCcodeGenerator CG(symbolTable);
+	CodeModel code;
+
+	RCcodeGenerator CG(code, symbolTable);
 	CG.visit(codeTree);
 
 

@@ -15,7 +15,7 @@ public:
 				cpaddr(sym.cpaddr),
 				tooladdr(sym.tooladdr),
 				cooraddr(sym.cooraddr), 
-				line(0)
+				lineno(0)
 	{}
 
 	virtual int execute(void *cookie) = 0;
@@ -162,50 +162,52 @@ public:
 											 {}
 public:
 	virtual int execute(void *cookie) override {
-		case INCR:
-		break;
-		case DECR:
-		break;
-		case ADD:
-		break;
-		case SUB:
-		break;
-		case MUL:
-		break;
-		case DIV:
-		break;
-		case SIN:
-		break;
-		case COS:
-		break;
-		case ATAN:
-		break;
-		case SQRT:
-		break;
-		case AND:
-		break;
-		case OR:
-		break;
-		case NOT:
-		break;
-		case XOR:
-		break;
-		default:
-		break;
+		switch(type) {
+			case INCR:
+			break;
+			case DECR:
+			break;
+			case ADD:
+			break;
+			case SUB:
+			break;
+			case MUL:
+			break;
+			case DIV:
+			break;
+			case SIN:
+			break;
+			case COS:
+			break;
+			case ATAN:
+			break;
+			case SQRT:
+			break;
+			case AND:
+			break;
+			case OR:
+			break;
+			case NOT:
+			break;
+			case XOR:
+			break;
+			default:
+			break;
+		}
+		
 	}
 
 public:
 	uint32_t type;
 	uint32_t index1;
 	uint32_t index2;
-}
+};
 
 
 class RCCallStatement : public RCBaseStatement {
 public:
 	RCCallStatement(RC_SymbolTable &sym) : RCBaseStatement(sym), 
-											 index1(0),
-											 index2(0)
+											 index(0)
 											 {}
 public:
 	virtual int execute(void *cookie) override {
@@ -214,7 +216,7 @@ public:
 public:
 	uint32_t index;						// the index of library function
 	std::vector<int> params;			// the index of function parameters
-}
+};
 
 
 class RCAssignStatement : public RCBaseStatement {
@@ -223,7 +225,7 @@ public:
 		NONE = 0, GENERIC = 1, CALL = 2, ARITHMETIC = 3
 	};
 public:
-	RCCallStatement(RC_SymbolTable &sym) : RCBaseStatement(sym), 
+	RCAssignStatement(RC_SymbolTable &sym) : RCBaseStatement(sym), 
 											type(NONE),
 											left(0),
 											right(0)
@@ -249,7 +251,7 @@ public:
 	std::vector<uint32_t> oprand;
 	std::vector<char> op; 
 	RCCallStatement* caller;
-}
+};
 
 class RCGotoStatement : public RCBaseStatement {
 public:
@@ -262,7 +264,7 @@ public:
 public:
 	uint32_t label;
 
-}
+};
 
 class RCIfStatement : public RCBaseStatement {
 public:
@@ -271,7 +273,7 @@ public:
 	};
 
 public:
-	RCIfStatement(RC_SymbolTable &sym) : RCBaseStatement(sym)
+	RCIfStatement(RC_SymbolTable &sym) : RCBaseStatement(sym),
 											type(NONE)
 											{}
 public:
@@ -299,7 +301,7 @@ public:
 	std::vector<RCBaseStatement*> *elseifThenStat;
 	std::vector<RCBaseStatement*> *elseThenStat;
 
-}
+};
 
 
 class RCForStatement : public RCBaseStatement {
@@ -320,7 +322,7 @@ public:
 	int32_t step; 					// the step value of var in every cycle
 
 	std::vector<RCBaseStatement*> *block;
-}
+};
 
 
 class RCWhileStatement : public RCBaseStatement {

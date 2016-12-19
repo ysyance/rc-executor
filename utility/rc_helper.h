@@ -113,6 +113,15 @@ public:
 		}
 	}	
 
+	static int parseSpeed(std::string &str) {
+		int size = str.size();
+		if(size < 2) return -1;
+		for(int i = 0; i < size; i ++) {
+			if(i == 0 && str[i] != 'V')  return -1;
+			if(i != 0 && (str[i] < '0' || str[i] > '9')) return -1 
+		}
+		return std::stoi(str.substr(1));
+	}
 	
 
 private:

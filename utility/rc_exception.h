@@ -12,6 +12,9 @@ enum RC_EXCEPTION_TYPE{
 	EXECP_NUM_FORMAT,
 	EXECP_POINT_NOT_DEFINED,
 	EXECP_NULL_INSTRUCTION,
+	EXECP_WRONG_VAR_TYPE,
+	EXECP_WRONG_PARAM,
+	EXECP_LACK_PARAM,
 };
 
 static std::vector<std::string> rc_excep_info = {
@@ -19,7 +22,10 @@ static std::vector<std::string> rc_excep_info = {
 	"RC variable duplicated defination",
 	"RC bad number format or bad number type",
 	"RC the point is not defined",
-	"RC the instruction type is null"
+	"RC the instruction type is null",
+	"RC the type of var is not right in such situation",
+	"RC the param is not proper in this expression",
+	"RC the inst is lack of parameters"
 };
 
 
@@ -101,7 +107,7 @@ public:
 	virtual void what() {
 		std::cerr << "[EXCEPTION" << " " << type << "] " 
 					<< "line " << line << ":" << col << " " 
-					<< "[NUM:" << point << "] --> "
+					<< "[POINT:" << point << "] --> "
 					<< rc_excep_info[type] 
 					<< std::endl;
 	}
@@ -131,5 +137,74 @@ public:
 
 private:
 	std::string inst;
+
+};
+
+
+
+class rc_wrongvartype_exception : public rc_exception {
+public:
+	rc_wrongvartype_exception() : rc_exception(EXECP_WRONG_VAR_TYPE, 0, 0){
+	}
+
+	rc_wrongvartype_exception(int l, int c, std::string s) : rc_exception(EXECP_WRONG_VAR_TYPE, l, c), var(s){
+	}
+
+public:
+	virtual void what() {
+		std::cerr << "[EXCEPTION" << " " << type << "] " 
+					<< "line " << line << ":" << col << " " 
+					<< "[VAR:" << var << "] --> "
+					<< rc_excep_info[type] 
+					<< std::endl;
+	}
+
+private:
+	std::string var;
+
+};
+
+
+class rc_wrongparam_exception : public rc_exception {
+public:
+	rc_wrongparam_exception() : rc_exception(EXECP_WRONG_PARAM, 0, 0){
+	}
+
+	rc_wrongparam_exception(int l, int c, std::string s) : rc_exception(EXECP_WRONG_PARAM, l, c), var(s){
+	}
+
+public:
+	virtual void what() {
+		std::cerr << "[EXCEPTION" << " " << type << "] " 
+					<< "line " << line << ":" << col << " " 
+					<< "[VAR:" << var << "] --> "
+					<< rc_excep_info[type] 
+					<< std::endl;
+	}
+
+private:
+	std::string var;
+
+};
+
+class rc_lackparam_exception : public rc_exception {
+public:
+	rc_lackparam_exception() : rc_exception(EXECP_LACK_PARAM, 0, 0){
+	}
+
+	rc_lackparam_exception(int l, int c, std::string s) : rc_exception(EXECP_LACK_PARAM, l, c), var(s){
+	}
+
+public:
+	virtual void what() {
+		std::cerr << "[EXCEPTION" << " " << type << "] " 
+					<< "line " << line << ":" << col << " " 
+					<< "[INST:" << var << "] --> "
+					<< rc_excep_info[type] 
+					<< std::endl;
+	}
+
+private:
+	std::string var;
 
 };

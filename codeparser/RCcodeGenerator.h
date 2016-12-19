@@ -5,10 +5,17 @@
 #include "rc_helper.h"
 #include "rc_innerdata.h"
 #include "rc_logger.h"
+#include "RCRuntimeModel.h"
+
+#include <stack>
 
 
 class RCcodeGenerator : public RCcodeBaseVisitor {
 public:
+    CodeModel &cm;
+
+    RC_SymbolTable &symbolTable;
+
 	RCAddressSpace &addrspace;     // addrspace[0] is the returned value of all the library function  in global
 	
 	StringPoolSpace &stringpool;
@@ -20,8 +27,12 @@ public:
 	std::unordered_map<std::string, int> &dataIndexMap;		// parser xml file and generator dataMap
 	std::unordered_map<std::string, int> &constIndexMap;	// the index of all the constants in addr space 
 
+    std::stack<std::vector<RCBaseStatement*>*> compileStack;
+
 public:
-	RCcodeGenerator(RC_SymbolTable &sym) :
+	RCcodeGenerator(CodeModel &c, RC_SymbolTable &sym) :
+                    cm(c),
+                    symbolTable(sym),
 					addrspace(sym.addrspace),
 					stringpool(sym.stringpool),
 					apaddr(sym.apaddr),
@@ -30,19 +41,32 @@ public:
 					cooraddr(sym.cooraddr),
 					dataIndexMap(sym.dataIndexMap),
 					constIndexMap(sym.constIndexMap)
-
 	{}
-	
-public:
-  virtual antlrcpp::Any visitProgram(RCcodeParser::ProgramContext *ctx) override {
-  	LOGGER_INF("Program");
-    return visitChildren(ctx);
-  }
 
-  virtual antlrcpp::Any visitStatBlock(RCcodeParser::StatBlockContext *ctx) override {
-  	LOGGER_INF("StatBlock");
-    return visitChildren(ctx);
-  }
+public:
+    virtual antlrcpp::Any visitProgram(RCcodeParser::ProgramContext *ctx) override {
+    	LOGGER_INF("Program");
+        compileStack.push(&cm);
+        return visitChildren(ctx);
+    }
+
+    virtual antlrcpp::Any visitStatBlock(RCcodeParser::StatBlockContext *ctx) override {
+        LOGGER_INF("StatBlock");
+        antlrcpp::Any result = defaultResult();
+        size_t n = ctx->children.size();
+        for (size_t i = 0; i < n; i++) {
+            if (!shouldVisitNextChild(ctx, result)) {
+                break;
+            }
+            antlrcpp::Any childResult = ctx->children[i]->accept(this);
+            result = aggregateResult(result, childResult);
+            std::vector<RCBaseStatement*>* cur = compileStack.top();
+            RCBaseStatement* tmp = result;
+            cur->push_back(tmp);
+        }
+
+        return result;
+    }
 
   virtual antlrcpp::Any visitRobotStat(RCcodeParser::RobotStatContext *ctx) override {
   	LOGGER_INF("RobotStat");
@@ -106,7 +130,49 @@ public:
 
   virtual antlrcpp::Any visitMovjExpr(RCcodeParser::MovjExprContext *ctx) override {
   	LOGGER_INF("MovjExpr");
-    return visitChildren(ctx);
+    int line = ctx->MOVJ()->getSymbol()->getLine();
+    RCRobotStatement *tempStat = new RCRobotStatement(symbolTable);
+
+    tempStat->lineno = line;
+    tempStat->type = RCRobotStatement::MOVJ;        // setting the type of robot inst
+
+    int paramSize = ctx->ID().size();
+    if(paramSize != 3) {
+        throw rc_lackparam_exception(line, 0, "MOVJ");
+    }
+
+    std::string strPoint = ctx->ID(0)->getText();
+    if(dataIndexMap.find(strPoint) != dataIndexMap.end()) {
+        uint8_t t = addrspace[dataIndexMap[strPoint]].type
+        if(t == TJTPOSE || t == TTRPOSE) {
+            tempStat->endpointIndex = dataIndexMap[strPoint];
+        } else {
+            int col = ctx->ID(0)->getSymbol()->getCharPositionInLine();
+            throw rc_wrongvartype_exception(line, col, strPoint);
+        }
+    } else {
+        int col = ctx->ID(0)->getSymbol()->getCharPositionInLine();
+        throw rc_pointnotdefined_exception(line, col, strPoint);
+    }
+
+    std::string strSpeed = ctx->ID(1)->getText();
+    int speed = Utility::parseSpeed(strSpeed);
+    if(speed != -1) {
+        tempStat->speed = speed;
+    } else {
+        int col = ctx->ID(1)->getSymbol()->getCharPositionInLine();
+        throw rc_wrongparam_exception(line, col, strSpeed);
+    }
+
+    std::string strZX = ctx->ID(2)->getText();
+    if(strZX != "Z0" && strZX != "Z1" && strZX != "Z2" && strZX != "Z3" && strZX != "Z4"
+         && strZX != "Z5" && strZX != "Z6" && strZX != "Z7" && strZX != "Z8") 
+    {
+        int col = ctx->ID(2)->getSymbol()->getCharPositionInLine();
+        throw rc_wrongparam_exception(line, col, strZX);
+    }
+
+    return tempStat;
   }
 
   virtual antlrcpp::Any visitMovlExpr(RCcodeParser::MovlExprContext *ctx) override {
