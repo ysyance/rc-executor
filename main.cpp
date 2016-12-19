@@ -10,7 +10,11 @@
 #include "rc_exception.h"
 #include "rc_innerdata.h"
 #include "RCdataLexer.h"
+#include "RCdataParser.h"
 #include "RCdataGenerator.h"
+#include "RCcodeLexer.h"
+#include "RCcodeParser.h"
+#include "RCcodeGenerator.h"
 
 
 using namespace antlr4;
@@ -34,33 +38,48 @@ int main() {
 	RC_SymbolTable symbolTable(addrspace, stringpool, apaddr, cpaddr, tooladdr, cooraddr,
 								dataIndexMap, constIndexMap, funcMap);
 
-	std::ifstream infile("test/sample.tid");     
-	ANTLRInputStream input(infile);     
+	// std::ifstream datafile("test/sample.tid");     
+	// ANTLRInputStream datainput(datafile);     
 	
-	RCdataLexer lexer(&input);
-	CommonTokenStream tokens(&lexer);
+	// RCdataLexer datalexer(&datainput);
+	// CommonTokenStream datatokens(&datalexer);
 
-	RCdataParser parser(&tokens);
-	ParseTree *tree = parser.prog();
+	// RCdataParser dataparser(&datatokens);
+	// ParseTree *datatree = dataparser.prog();
 
-	RCdataGenerator RG(symbolTable);
-	try{
-		RG.visit(tree);
-	} catch(rc_exception &e) {
-		e.what();
-	} catch(std::exception &e) {
-		std::cout << "C++ runtime exception" << std::endl;
-	}
+	// std::cout << datatree->toStringTree(&dataparser) << std::endl;
+
+	// RCdataGenerator DG(symbolTable);
+	// try{
+	// 	DG.visit(datatree);
+	// } catch(rc_exception &e) {
+	// 	e.what();
+	// } catch(std::exception &e) {
+	// 	std::cout << "C++ runtime exception" << std::endl;
+	// }
 	
-	Utility::printfDataIndexMap(dataIndexMap);
-	Utility::printfStringPool(stringpool);
-	Utility::printfAPDataSpace(apaddr);
-	Utility::printfCPDataSpace(cpaddr);
-	Utility::printfToolDataSpace(tooladdr);
-	Utility::printfCoorDataSpace(cooraddr);
-	Utility::printfAddrspace(addrspace);
+	// Utility::printfDataIndexMap(dataIndexMap);
+	// Utility::printfStringPool(stringpool);
+	// Utility::printfAPDataSpace(apaddr);
+	// Utility::printfCPDataSpace(cpaddr);
+	// Utility::printfToolDataSpace(tooladdr);
+	// Utility::printfCoorDataSpace(cooraddr);
+	// Utility::printfAddrspace(addrspace);
+
+	std::ifstream codeFile("test/sample.tip"); 
+	ANTLRInputStream codeInput(codeFile);
+
+	RCcodeLexer codeLexer(&codeInput);
+	CommonTokenStream codeTokens(&codeLexer);
+
+	RCcodeParser codeParser(&codeTokens);
+	ParseTree *codeTree = codeParser.prog();
+
+	std::cout << codeTree->toStringTree(&codeParser) << std::endl;
+
+	RCcodeGenerator CG(symbolTable);
+	CG.visit(codeTree);
 
 
-	std::cout << tree->toStringTree(&parser) << std::endl;
 	return 0;
 }

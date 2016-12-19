@@ -11,13 +11,15 @@ enum RC_EXCEPTION_TYPE{
 	EXECP_VAR_DUP,
 	EXECP_NUM_FORMAT,
 	EXECP_POINT_NOT_DEFINED,
+	EXECP_NULL_INSTRUCTION,
 };
 
 static std::vector<std::string> rc_excep_info = {
 	"RC executor general runtime exception",
 	"RC variable duplicated defination",
 	"RC bad number format or bad number type",
-	"RC the point is not defined"
+	"RC the point is not defined",
+	"RC the instruction type is null"
 };
 
 
@@ -106,5 +108,28 @@ public:
 
 private:
 	std::string point;
+
+};
+
+
+class rc_nullinstruction_exception : public rc_exception {
+public:
+	rc_nullinstruction_exception() : rc_exception(EXECP_NULL_INSTRUCTION, 0, 0) {
+	}
+
+	rc_nullinstruction_exception(int l, int c, std::string s) : rc_exception(EXECP_NULL_INSTRUCTION, l, c), inst(s){
+	}
+
+public:
+	virtual void what() {
+		std::cerr << "[EXCEPTION" << " " << type << "] " 
+					<< "line " << line << ":" << col << " " 
+					<< "[INST:" << inst << "] --> "
+					<< rc_excep_info[type] 
+					<< std::endl;
+	}
+
+private:
+	std::string inst;
 
 };

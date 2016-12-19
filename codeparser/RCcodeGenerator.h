@@ -1,11 +1,39 @@
 #pragma once
 
 #include "RCcodeBaseVisitor.h"
+#include "rc_exception.h"
+#include "rc_helper.h"
+#include "rc_innerdata.h"
+#include "rc_logger.h"
 
 
 class RCcodeGenerator : public RCcodeBaseVisitor {
 public:
+	RCAddressSpace &addrspace;     // addrspace[0] is the returned value of all the library function  in global
+	
+	StringPoolSpace &stringpool;
+	APDataSpace &apaddr;
+	CPDataSpace &cpaddr;
+	ToolDataSpace &tooladdr;
+	CoorDataSpace &cooraddr;
 
+	std::unordered_map<std::string, int> &dataIndexMap;		// parser xml file and generator dataMap
+	std::unordered_map<std::string, int> &constIndexMap;	// the index of all the constants in addr space 
+
+public:
+	RCcodeGenerator(RC_SymbolTable &sym) :
+					addrspace(sym.addrspace),
+					stringpool(sym.stringpool),
+					apaddr(sym.apaddr),
+					cpaddr(sym.cpaddr),
+					tooladdr(sym.tooladdr),
+					cooraddr(sym.cooraddr),
+					dataIndexMap(sym.dataIndexMap),
+					constIndexMap(sym.constIndexMap)
+
+	{}
+	
+public:
   virtual antlrcpp::Any visitProgram(RCcodeParser::ProgramContext *ctx) override {
   	LOGGER_INF("Program");
     return visitChildren(ctx);

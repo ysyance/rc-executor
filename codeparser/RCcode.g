@@ -45,7 +45,7 @@ data_stat
 signal_stat
  : WAIT ID op=(EQ|GE|LE|LT|GT|NE) numorid (',' TIME)? ';'  	# waitExpr
  | DELAY TIME ';' 							# delayExpr
- | SETOUT ID ',' numorid ';'						# setoutExpr
+ | SETOUT ID ',' numorid ';'				# setoutExpr
  | DIN ID ',' ID ';' 						# dinExpr
  ;
 
