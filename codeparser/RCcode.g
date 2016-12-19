@@ -43,16 +43,16 @@ data_stat
  ;
 
 signal_stat
- : WAIT ID RELOP numorid (',' TIME) ';'  	# waitExpr
+ : WAIT ID op=(EQ|GE|LE|LT|GT|NE) numorid (',' TIME)? ';'  	# waitExpr
  | DELAY TIME ';' 							# delayExpr
- | SETOUT ID ',' ID ';'						# setoutExpr
+ | SETOUT ID ',' numorid ';'						# setoutExpr
  | DIN ID ',' ID ';' 						# dinExpr
  ;
 
 math_stat
  : INCR ID ';'  								# incExpr
  | DECR ID ';' 									# decExpr
- | FUNC op1=(ELEM | ID) ',' op2=(ELEM | ID)';' 	# funcExpr
+ | FUNC op1=(ELEM | ID) ',' op2=(ELEM | ID | NUM)';' 	# funcExpr
  ;
 
 call_stat
@@ -61,9 +61,10 @@ call_stat
 
 assign_stat
  : ID ASSIGN boolval ';' 		# assignExpr1
- | ID ASSIGN numorid op=('+'|'-'|'*'|'/'|'=='|'>='|'<='|'>'|'<'|'<>') numorid ';' # assignExpr2
- | ID ASSIGN libcall_stat ';'  	# assignExpr3
+ | ID ASSIGN numorid op=(ADD|SUB|MUL|DIV|EQ|GE|LE|GT|LT|NE) numorid ';' # assignExpr2
+ | ID ASSIGN funcallexpr ';'  	# assignExpr3
  | ID ASSIGN numorid ';'		# assignExpr4
+ | ID ASSIGN CSTRING ';' 		# assignExpr5
  ;
 
 goto_stat
@@ -71,19 +72,19 @@ goto_stat
  ;
 
 if_stat  
- : IF numorid RELOP numorid THEN block (elseif_stat)* (else_stat)? ENDIF ';' 	# ifExpr1
+ : IF numorid op=(EQ|GE|LE|LT|GT|NE) numorid THEN block (elseif_stat)* (else_stat)? ENDIF ';' 	# ifExpr1
  | IF boolval THEN block (elseif_stat)* (else_stat)? ENDIF ';'				 	# ifExpr2
  | IF ID THEN block (elseif_stat)* (else_stat)? ENDIF ';'				 		# ifExpr3
  ;  
   
 elseif_stat
- : ELSEIF numorid RELOP numorid THEN block ';'				# elseifExpr1
- | ELSEIF boolval THEN block ';'							# elseifExpr2
- | ELSEIF ID THEN block ';'									# elseifExpr3
+ : ELSEIF numorid op=(EQ|GE|LE|LT|GT|NE) numorid THEN block 				# elseifExpr1
+ | ELSEIF boolval THEN block 							# elseifExpr2
+ | ELSEIF ID THEN block 									# elseifExpr3
  ;
 
 else_stat
- : ELSE block   ';'							# elseExpr
+ : ELSE block   							# elseExpr
  ;
 
 for_stat
@@ -91,7 +92,7 @@ for_stat
  ;
 
 while_stat
- : WHILE numorid RELOP numorid DO block ENDWL ';'   		# whileExpr1
+ : WHILE numorid op=(EQ|GE|LE|LT|GT|NE) numorid DO block ENDWL ';'   		# whileExpr1
  | WHILE boolval DO block ENDWL ';' 						# whileExpr2
  | WHILE ID DO block ENDWL ';' 								# whileExpr3 
  ;
@@ -103,7 +104,11 @@ boolval
  ;
 
 libcall_stat
- : ID '(' params ')'				# libcallExpr
+ :  funcallexpr ';'			# libcallExpr
+ ;
+
+funcallexpr
+ : ID '(' params ')'        # funcallExpr
  ;
 
 params
@@ -182,6 +187,18 @@ DECR : 'DECR';
 
 CALL : 'CALL';
 
+EQ : '==';
+GT : '>';
+GE : '>=';
+LT : '<';
+LE : '<=';
+NE : '<>';
+
+ADD : '+';
+SUB : '-';
+MUL : '*';
+DIV : '/';
+
 FUNC 
  : 'ADD'
  | 'SUB'
@@ -195,15 +212,6 @@ FUNC
  | 'OR'
  | 'NOT'
  | 'XOR'
- ;
-
-RELOP 
- : '=='
- | '>='
- | '<='
- | '<>'
- | '>'
- | '<'
  ;
 
 TIME 
