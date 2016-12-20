@@ -185,7 +185,19 @@ public:
 						dataIndexMap(d), 
 						constIndexMap(c), 
 						funcMap(func) 
-						{}
+	{
+		addrspace.push_back(RC_IValue(TINT, 0));
+
+		int index = addrspace.size();
+		dataIndexMap.insert({"FALSE", index});
+		addrspace.push_back(RC_IValue(TBOOL, 0));
+
+		index = addrspace.size();
+		dataIndexMap.insert({"TRUE", index});
+		addrspace.push_back(RC_IValue(TBOOL, 1));
+
+		funcMap.insert({"COMM", 0});
+	}
 
 public:
 	RCAddressSpace &addrspace;     // addrspace[0] is the returned value of all the library function  in global

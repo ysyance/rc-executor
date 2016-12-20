@@ -19,8 +19,8 @@ public:
 	{}
 
 	virtual int execute(void *cookie) = 0;
-	virtual void printInfo() {
-		std::cout << "RCBaseStatement" << std::endl;
+	virtual void printInfo(std::string  empty="") {
+		std::cout << empty << "RCBaseStatement" << std::endl;
 	}
 
 public:
@@ -49,8 +49,8 @@ public:
 	std::string programName;
 
 public:
-	virtual void printInfo() override {
-		std::cout << "[Line " << lineno << "] ";
+	virtual void printInfo(std::string  empty) override {
+		std::cout << empty << "[Line " << lineno << "] ";
 		std::cout << "Call " << programName << std::endl;
 	}
 	
@@ -91,8 +91,8 @@ public:
 	INST_TYPE type;
 
 public:
-	virtual void printInfo() {
-		std::cout << "[Line " << lineno << "] ";
+	virtual void printInfo(std::string  empty) {
+		std::cout << empty << "[Line " << lineno << "] ";
 		if(type == RET) std::cout << "RET" << std::endl;
 		else if(type == NOP) std::cout << "NOP" << std::endl;
 		else if(type == PAUSE) std::cout << "PAUSE" << std::endl;
@@ -147,8 +147,8 @@ public:
 	std::string frame;
 
 public:
-	virtual void printInfo() override{
-		std::cout << "[Line " << lineno << "]";
+	virtual void printInfo(std::string  empty) override{
+		std::cout << empty << "[Line " << lineno << "]";
 		if(type == MOVJ) 
 			std::cout << " MOVJ " << endpointIndex << " V" << speed << " Z" << Z << std::endl;
 		if(type == MOVL) 
@@ -200,8 +200,8 @@ public:
 	std::pair<uint32_t, uint32_t> elem;
 
 public:
-	virtual void printInfo() override{
-		std::cout << "[Line " << lineno << "]";
+	virtual void printInfo(std::string  empty) override{
+		std::cout << empty << "[Line " << lineno << "]";
 		if(type == SET) {
 			std::cout << " SET " << index1 << " " << index2 << std::endl;
 		} else if(type == SETE) {
@@ -253,8 +253,8 @@ public:
 	uint32_t index2;
 
 public:
-	virtual void printInfo() override {
-		std::cout << "[Line " << lineno << "]";
+	virtual void printInfo(std::string  empty) override {
+		std::cout << empty << "[Line " << lineno << "]";
 		if(type == WAIT) {
 			std::cout << " WAIT " << index1 << " op<" << op << "> " << index2 << " T" << time << std::endl;
 		} else if(type == DELAY) {
@@ -328,8 +328,8 @@ public:
 
 
 public:
-	virtual void printInfo() override {
-		std::cout << "[Line " << lineno << "]";
+	virtual void printInfo(std::string  empty) override {
+		std::cout << empty << "[Line " << lineno << "]";
 		if(type == INCR) {
 			std::cout << " INCR " << index1 << std::endl;
 		} else if(type == DECR) {
@@ -369,6 +369,16 @@ public:
 public:
 	uint32_t index;						// the index of library function
 	std::vector<int> params;			// the index of function parameters
+
+public:
+	virtual void printInfo(std::string  empty) override {
+		std::cout << empty << "[Line " << lineno << "]";
+		std::cout << " f{" << index << "} (";
+		for(int i = 0; i < params.size(); i ++) {
+			std::cout << " {" << params[i] << "}";
+		} 
+		std::cout << " )" << std::endl;
+	}
 };
 
 
@@ -402,8 +412,28 @@ public:
 	uint32_t left;
 	uint32_t right;
 	std::vector<uint32_t> oprand;
-	std::vector<char> op; 
-	RCLibCallStatement* caller;
+	std::vector<std::string> op; 
+	RCBaseStatement* caller;
+
+public:
+	virtual void printInfo(std::string  empty) override {
+		std::cout << empty << "[Line " << lineno << "] ";
+		if(type == GENERIC) {
+			std::cout << "{" << left << "} = {" << right << "}" << std::endl;
+		} else if(type == ARITHMETIC) {
+			std::cout << "{" << left << "} = ";
+			for(auto &e : oprand) {
+				std::cout << " {" << e <<"} ";
+			}
+			for(auto &e : op) {
+				std::cout << " <" << e << "> ";
+			}
+			std::cout << std::endl;
+		} else if(type == CALL) {
+			std::cout << "{" << left << "} = ";
+			caller->printInfo();
+		}
+	}
 };
 
 class RCGotoStatement : public RCBaseStatement {
@@ -417,13 +447,23 @@ public:
 public:
 	std::string label;
 
+public:
+	virtual void printInfo(std::string  empty) override {
+		std::cout << empty << "[Line " << lineno << "] ";
+		std::cout << "GOTO " << label << std::endl;
+	}
+
 };
 
 class RCIfStatement : public RCBaseStatement {
 public:
 	enum INST_TYPE {
-		NONE = 0, GENERIC = 1, BOOLVALUE = 2, VAR = 3
+		NONE = 0, GENERIC = 1, VAR = 2
 	};
+	enum OP_TYPE {
+		EQ = 0, GE = 1, GT = 2, LE = 3, LT = 4, NE = 5
+	};
+
 
 public:
 	RCIfStatement(RC_SymbolTable &sym) : RCBaseStatement(sym),
@@ -433,8 +473,6 @@ public:
 	virtual int execute(void *cookie) override {
 		switch(type) {
 			case GENERIC:
-			break;
-			case BOOLVALUE:
 			break;
 			case VAR:
 			break;
@@ -446,7 +484,7 @@ public:
 public:
 	INST_TYPE type;
 	uint32_t exprVarIndex;
-	char op;
+	OP_TYPE op;
 	uint32_t oprand1;
 	uint32_t oprand2;
 
@@ -454,6 +492,65 @@ public:
 	std::vector<RCBaseStatement*> *elseifThenStat;
 	std::vector<RCBaseStatement*> *elseThenStat;
 
+public:
+	virtual void printInfo(std::string  empty) override {
+		std::cout << empty << "[Line " << lineno << "] " << std::endl;
+		if(type == GENERIC) {
+			std::cout << empty << "IF " << "{" << oprand1 << "} <" << op << "> {" << oprand2 << "}" << std::endl;
+		} else if(type == VAR) {
+			std::cout << empty << "IF " << "{" << exprVarIndex << "}" << std::endl;
+		}
+		for(auto &e : *ifThenStat) {
+			e->printInfo(empty + "\t");
+		}
+		for(auto &e : *elseifThenStat) {
+			e->printInfo();
+		}
+		std::cout << empty << "ELSE" << std::endl;
+		for(auto &e : *elseThenStat) {
+			e->printInfo(empty + "\t");
+		}
+		std::cout << empty << "ENDIF" << std::endl;
+	}
+
+};
+
+class RCElseifStatement : public RCBaseStatement {
+public:
+	enum INST_TYPE {
+		NONE = 0, GENERIC = 1, VAR = 2
+	};
+	enum OP_TYPE {
+		EQ = 0, GE = 1, GT = 2, LE = 3, LT = 4, NE = 5
+	};
+public:
+	RCElseifStatement(RC_SymbolTable &sym) : RCBaseStatement(sym)
+											
+											{}
+public:
+	virtual int execute(void *cookie) override {}
+
+public:
+	INST_TYPE type;
+	uint32_t exprVarIndex;
+	OP_TYPE op;
+	uint32_t oprand1;
+	uint32_t oprand2;
+
+	std::vector<RCBaseStatement*> *Stat;
+public:
+	virtual void printInfo(std::string  empty) override {
+		std::cout << empty << "[Line " << lineno << "] " << std::endl;
+		if(type == GENERIC) {
+			std::cout << empty << "ELSEIF " << "{" << oprand1 << "} <" << op << "> {" << oprand2 << "}" << std::endl;
+		} else if(type == VAR) {
+			std::cout << empty << "ELSEIF " << "{" << exprVarIndex << "}" << std::endl;
+		}
+		for(auto &e : *Stat) {
+			e->printInfo(empty + "\t");
+		}
+		
+	}
 };
 
 
@@ -475,13 +572,25 @@ public:
 	int32_t step; 					// the step value of var in every cycle
 
 	std::vector<RCBaseStatement*> *block;
+public:
+	virtual void printInfo(std::string  empty) override {
+		std::cout << empty << "[Line " << lineno << "] " << std::endl; 
+		std::cout << empty << "FOR {" << varIndex << "} = " << initValue << " TO " << stopValue << " BY " << step << std::endl;
+		for(auto &e : *block) {
+			e->printInfo(empty + "\t");
+		}
+		std::cout << empty << "ENDFOR" << std::endl;
+	}
 };
 
 
 class RCWhileStatement : public RCBaseStatement {
 public:
 	enum INST_TYPE{
-		NONE = 0, GENERIC = 1, BOOLVALUE = 2, VAR = 3
+		NONE = 0, GENERIC = 1, VAR = 2
+	};
+	enum OP_TYPE {
+		EQ = 0, GE = 1, GT = 2, LE = 3, LT = 4, NE = 5
 	};
 public:
 	RCWhileStatement(RC_SymbolTable &sym) : RCBaseStatement(sym)
@@ -490,8 +599,6 @@ public:
 	virtual int execute(void *cookie) override {
 		switch(type) {
 			case GENERIC:
-			break;
-			case BOOLVALUE:
 			break;
 			case VAR:
 			break;
@@ -504,11 +611,28 @@ public:
 	INST_TYPE type;
 
 	uint32_t exprVarIndex;
-	char op;
+	OP_TYPE op;
 	uint32_t oprand1;
 	uint32_t oprand2;
 
 	std::vector<RCBaseStatement*> *block;
+
+public:
+	virtual void printInfo(std::string  empty) override {
+		std::cout << empty << "[Line " << lineno << "] " << std::endl;
+		if(type == GENERIC) {
+			std::cout << empty << "WHILE " << "{" << oprand1 << "} <" << op << "> {" << oprand2 << "} " << "DO"  << std::endl;
+		} else if(type == VAR) {
+			std::cout << empty << "WHILE " << "{" << exprVarIndex << "} " << "DO" << std::endl;
+		}
+		for(auto &e : *block) {
+			e->printInfo(empty + "\t");
+		}
+		std::cout << empty << "ENDWL" << std::endl;
+
+	}
+
+
 };
 
 

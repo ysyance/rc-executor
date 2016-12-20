@@ -14,14 +14,13 @@ public:
   enum {
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, GOTO = 5, IF = 6, THEN = 7, 
     ELSEIF = 8, ELSE = 9, ENDIF = 10, ASSIGN = 11, WHILE = 12, DO = 13, 
-    ENDWL = 14, FOR = 15, TO = 16, BY = 17, ENDFOR = 18, TRUE = 19, FALSE = 20, 
-    MOVJ = 21, MOVL = 22, MOVC = 23, MOVS = 24, SHIFTON = 25, SHIFTOFF = 26, 
-    SET = 27, SETE = 28, GETE = 29, WAIT = 30, DELAY = 31, SETOUT = 32, 
-    DIN = 33, LABEL = 34, RET = 35, NOP = 36, PAUSE = 37, HALT = 38, BREAK = 39, 
-    INCR = 40, DECR = 41, CALL = 42, EQ = 43, GT = 44, GE = 45, LT = 46, 
-    LE = 47, NE = 48, ADD = 49, SUB = 50, MUL = 51, DIV = 52, FUNC = 53, 
-    TIME = 54, ELEM = 55, CSTRING = 56, CH = 57, ID = 58, NUM = 59, COMMENT = 60, 
-    SPACE = 61, OTHER = 62
+    ENDWL = 14, FOR = 15, TO = 16, BY = 17, ENDFOR = 18, MOVJ = 19, MOVL = 20, 
+    MOVC = 21, MOVS = 22, SHIFTON = 23, SHIFTOFF = 24, SET = 25, SETE = 26, 
+    GETE = 27, WAIT = 28, DELAY = 29, SETOUT = 30, DIN = 31, LABEL = 32, 
+    RET = 33, NOP = 34, PAUSE = 35, HALT = 36, BREAK = 37, INCR = 38, DECR = 39, 
+    CALL = 40, EQ = 41, GT = 42, GE = 43, LT = 44, LE = 45, NE = 46, ADD = 47, 
+    SUB = 48, MUL = 49, DIV = 50, FUNC = 51, TIME = 52, ELEM = 53, CSTRING = 54, 
+    CH = 55, ID = 56, NUM = 57, COMMENT = 58, SPACE = 59, OTHER = 60
   };
 
   RCcodeLexer(antlr4::CharStream *input);

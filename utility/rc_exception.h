@@ -15,7 +15,8 @@ enum RC_EXCEPTION_TYPE{
 	EXECP_WRONG_VAR_TYPE,
 	EXECP_WRONG_PARAM,
 	EXECP_LACK_PARAM,
-	EXECP_VAR_NOT_DEFINED
+	EXECP_VAR_NOT_DEFINED,
+	EXECP_LIB_FUNC_NOT_EXIST
 };
 
 static std::vector<std::string> rc_excep_info = {
@@ -27,7 +28,8 @@ static std::vector<std::string> rc_excep_info = {
 	"RC the type of var is not right in such situation",
 	"RC the param is not proper in this expression",
 	"RC the inst is lack of parameters",
-	"RC the var is not defined in this program"
+	"RC the var is not defined in this program",
+	"RC the lib function is not existing"
 };
 
 
@@ -231,5 +233,29 @@ public:
 
 private:
 	std::string var;
+
+};
+
+
+
+class rc_libfuncnotexist_exception : public rc_exception {
+public:
+	rc_libfuncnotexist_exception() : rc_exception(EXECP_LIB_FUNC_NOT_EXIST, 0, 0){
+	}
+
+	rc_libfuncnotexist_exception(int l, int c, std::string s) : rc_exception(EXECP_LIB_FUNC_NOT_EXIST, l, c), func(s){
+	}
+
+public:
+	virtual void what() {
+		std::cerr << "[EXCEPTION" << " " << type << "] " 
+					<< "line " << line << ":" << col << " " 
+					<< "[FUNC:" << func << "] --> "
+					<< rc_excep_info[type] 
+					<< std::endl;
+	}
+
+private:
+	std::string func;
 
 };

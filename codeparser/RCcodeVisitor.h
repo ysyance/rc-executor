@@ -67,21 +67,15 @@ public:
 
     virtual antlrcpp::Any visitAssignExpr4(RCcodeParser::AssignExpr4Context *context) = 0;
 
-    virtual antlrcpp::Any visitAssignExpr5(RCcodeParser::AssignExpr5Context *context) = 0;
-
     virtual antlrcpp::Any visitGotoExpr(RCcodeParser::GotoExprContext *context) = 0;
 
     virtual antlrcpp::Any visitIfExpr1(RCcodeParser::IfExpr1Context *context) = 0;
 
     virtual antlrcpp::Any visitIfExpr2(RCcodeParser::IfExpr2Context *context) = 0;
 
-    virtual antlrcpp::Any visitIfExpr3(RCcodeParser::IfExpr3Context *context) = 0;
-
     virtual antlrcpp::Any visitElseifExpr1(RCcodeParser::ElseifExpr1Context *context) = 0;
 
     virtual antlrcpp::Any visitElseifExpr2(RCcodeParser::ElseifExpr2Context *context) = 0;
-
-    virtual antlrcpp::Any visitElseifExpr3(RCcodeParser::ElseifExpr3Context *context) = 0;
 
     virtual antlrcpp::Any visitElseExpr(RCcodeParser::ElseExprContext *context) = 0;
 
@@ -90,12 +84,6 @@ public:
     virtual antlrcpp::Any visitWhileExpr1(RCcodeParser::WhileExpr1Context *context) = 0;
 
     virtual antlrcpp::Any visitWhileExpr2(RCcodeParser::WhileExpr2Context *context) = 0;
-
-    virtual antlrcpp::Any visitWhileExpr3(RCcodeParser::WhileExpr3Context *context) = 0;
-
-    virtual antlrcpp::Any visitTrueExpr(RCcodeParser::TrueExprContext *context) = 0;
-
-    virtual antlrcpp::Any visitFalseExpr(RCcodeParser::FalseExprContext *context) = 0;
 
     virtual antlrcpp::Any visitLibcallExpr(RCcodeParser::LibcallExprContext *context) = 0;
 

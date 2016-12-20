@@ -14,22 +14,21 @@ public:
   enum {
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, GOTO = 5, IF = 6, THEN = 7, 
     ELSEIF = 8, ELSE = 9, ENDIF = 10, ASSIGN = 11, WHILE = 12, DO = 13, 
-    ENDWL = 14, FOR = 15, TO = 16, BY = 17, ENDFOR = 18, TRUE = 19, FALSE = 20, 
-    MOVJ = 21, MOVL = 22, MOVC = 23, MOVS = 24, SHIFTON = 25, SHIFTOFF = 26, 
-    SET = 27, SETE = 28, GETE = 29, WAIT = 30, DELAY = 31, SETOUT = 32, 
-    DIN = 33, LABEL = 34, RET = 35, NOP = 36, PAUSE = 37, HALT = 38, BREAK = 39, 
-    INCR = 40, DECR = 41, CALL = 42, EQ = 43, GT = 44, GE = 45, LT = 46, 
-    LE = 47, NE = 48, ADD = 49, SUB = 50, MUL = 51, DIV = 52, FUNC = 53, 
-    TIME = 54, ELEM = 55, CSTRING = 56, CH = 57, ID = 58, NUM = 59, COMMENT = 60, 
-    SPACE = 61, OTHER = 62
+    ENDWL = 14, FOR = 15, TO = 16, BY = 17, ENDFOR = 18, MOVJ = 19, MOVL = 20, 
+    MOVC = 21, MOVS = 22, SHIFTON = 23, SHIFTOFF = 24, SET = 25, SETE = 26, 
+    GETE = 27, WAIT = 28, DELAY = 29, SETOUT = 30, DIN = 31, LABEL = 32, 
+    RET = 33, NOP = 34, PAUSE = 35, HALT = 36, BREAK = 37, INCR = 38, DECR = 39, 
+    CALL = 40, EQ = 41, GT = 42, GE = 43, LT = 44, LE = 45, NE = 46, ADD = 47, 
+    SUB = 48, MUL = 49, DIV = 50, FUNC = 51, TIME = 52, ELEM = 53, CSTRING = 54, 
+    CH = 55, ID = 56, NUM = 57, COMMENT = 58, SPACE = 59, OTHER = 60
   };
 
   enum {
     RuleProg = 0, RuleBlock = 1, RuleStat = 2, RuleRobot_stat = 3, RuleData_stat = 4, 
     RuleSignal_stat = 5, RuleMath_stat = 6, RuleCall_stat = 7, RuleAssign_stat = 8, 
     RuleGoto_stat = 9, RuleIf_stat = 10, RuleElseif_stat = 11, RuleElse_stat = 12, 
-    RuleFor_stat = 13, RuleWhile_stat = 14, RuleBoolval = 15, RuleLibcall_stat = 16, 
-    RuleFuncallexpr = 17, RuleParams = 18, RuleNumorid = 19, RuleOneinst_stat = 20
+    RuleFor_stat = 13, RuleWhile_stat = 14, RuleLibcall_stat = 15, RuleFuncallexpr = 16, 
+    RuleParams = 17, RuleNumorid = 18, RuleOneinst_stat = 19
   };
 
   RCcodeParser(antlr4::TokenStream *input);
@@ -57,7 +56,6 @@ public:
   class Else_statContext;
   class For_statContext;
   class While_statContext;
-  class BoolvalContext;
   class Libcall_statContext;
   class FuncallexprContext;
   class ParamsContext;
@@ -406,16 +404,6 @@ public:
 
     antlr4::tree::TerminalNode *ID();
     antlr4::tree::TerminalNode *ASSIGN();
-    NumoridContext *numorid();
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  AssignExpr5Context : public Assign_statContext {
-  public:
-    AssignExpr5Context(Assign_statContext *ctx);
-
-    antlr4::tree::TerminalNode *ID();
-    antlr4::tree::TerminalNode *ASSIGN();
     antlr4::tree::TerminalNode *CSTRING();
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
@@ -426,13 +414,23 @@ public:
 
     antlr4::tree::TerminalNode *ID();
     antlr4::tree::TerminalNode *ASSIGN();
-    FuncallexprContext *funcallexpr();
+    NumoridContext *numorid();
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   class  AssignExpr2Context : public Assign_statContext {
   public:
     AssignExpr2Context(Assign_statContext *ctx);
+
+    antlr4::tree::TerminalNode *ID();
+    antlr4::tree::TerminalNode *ASSIGN();
+    FuncallexprContext *funcallexpr();
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  AssignExpr1Context : public Assign_statContext {
+  public:
+    AssignExpr1Context(Assign_statContext *ctx);
 
     antlr4::Token *op = nullptr;
     antlr4::tree::TerminalNode *ID();
@@ -449,16 +447,6 @@ public:
     antlr4::tree::TerminalNode *GT();
     antlr4::tree::TerminalNode *LT();
     antlr4::tree::TerminalNode *NE();
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  AssignExpr1Context : public Assign_statContext {
-  public:
-    AssignExpr1Context(Assign_statContext *ctx);
-
-    antlr4::tree::TerminalNode *ID();
-    antlr4::tree::TerminalNode *ASSIGN();
-    BoolvalContext *boolval();
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
@@ -524,27 +512,12 @@ public:
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
-  class  IfExpr3Context : public If_statContext {
-  public:
-    IfExpr3Context(If_statContext *ctx);
-
-    antlr4::tree::TerminalNode *IF();
-    antlr4::tree::TerminalNode *ID();
-    antlr4::tree::TerminalNode *THEN();
-    BlockContext *block();
-    antlr4::tree::TerminalNode *ENDIF();
-    std::vector<Elseif_statContext *> elseif_stat();
-    Elseif_statContext* elseif_stat(size_t i);
-    Else_statContext *else_stat();
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
   class  IfExpr2Context : public If_statContext {
   public:
     IfExpr2Context(If_statContext *ctx);
 
     antlr4::tree::TerminalNode *IF();
-    BoolvalContext *boolval();
+    antlr4::tree::TerminalNode *ID();
     antlr4::tree::TerminalNode *THEN();
     BlockContext *block();
     antlr4::tree::TerminalNode *ENDIF();
@@ -591,17 +564,6 @@ public:
   class  ElseifExpr2Context : public Elseif_statContext {
   public:
     ElseifExpr2Context(Elseif_statContext *ctx);
-
-    antlr4::tree::TerminalNode *ELSEIF();
-    BoolvalContext *boolval();
-    antlr4::tree::TerminalNode *THEN();
-    BlockContext *block();
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  ElseifExpr3Context : public Elseif_statContext {
-  public:
-    ElseifExpr3Context(Elseif_statContext *ctx);
 
     antlr4::tree::TerminalNode *ELSEIF();
     antlr4::tree::TerminalNode *ID();
@@ -685,18 +647,6 @@ public:
     WhileExpr2Context(While_statContext *ctx);
 
     antlr4::tree::TerminalNode *WHILE();
-    BoolvalContext *boolval();
-    antlr4::tree::TerminalNode *DO();
-    BlockContext *block();
-    antlr4::tree::TerminalNode *ENDWL();
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  WhileExpr3Context : public While_statContext {
-  public:
-    WhileExpr3Context(While_statContext *ctx);
-
-    antlr4::tree::TerminalNode *WHILE();
     antlr4::tree::TerminalNode *ID();
     antlr4::tree::TerminalNode *DO();
     BlockContext *block();
@@ -725,37 +675,6 @@ public:
   };
 
   While_statContext* while_stat();
-
-  class  BoolvalContext : public antlr4::ParserRuleContext {
-  public:
-    BoolvalContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-   
-    BoolvalContext() : antlr4::ParserRuleContext() { }
-    void copyFrom(BoolvalContext *context);
-    using antlr4::ParserRuleContext::copyFrom;
-
-    virtual size_t getRuleIndex() const override;
-
-   
-  };
-
-  class  FalseExprContext : public BoolvalContext {
-  public:
-    FalseExprContext(BoolvalContext *ctx);
-
-    antlr4::tree::TerminalNode *FALSE();
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  TrueExprContext : public BoolvalContext {
-  public:
-    TrueExprContext(BoolvalContext *ctx);
-
-    antlr4::tree::TerminalNode *TRUE();
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  BoolvalContext* boolval();
 
   class  Libcall_statContext : public antlr4::ParserRuleContext {
   public:

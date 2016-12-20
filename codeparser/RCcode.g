@@ -60,11 +60,10 @@ call_stat
  ;
 
 assign_stat
- : ID ASSIGN boolval ';' 		# assignExpr1
- | ID ASSIGN numorid op=(ADD|SUB|MUL|DIV|EQ|GE|LE|GT|LT|NE) numorid ';' # assignExpr2
- | ID ASSIGN funcallexpr ';'  	# assignExpr3
- | ID ASSIGN numorid ';'		# assignExpr4
- | ID ASSIGN CSTRING ';' 		# assignExpr5
+ : ID ASSIGN numorid op=(ADD|SUB|MUL|DIV|EQ|GE|LE|GT|LT|NE) numorid ';' # assignExpr1
+ | ID ASSIGN funcallexpr ';'  	# assignExpr2
+ | ID ASSIGN numorid ';'		# assignExpr3
+ | ID ASSIGN CSTRING ';' 		# assignExpr4
  ;
 
 goto_stat
@@ -73,14 +72,12 @@ goto_stat
 
 if_stat  
  : IF numorid op=(EQ|GE|LE|LT|GT|NE) numorid THEN block (elseif_stat)* (else_stat)? ENDIF ';' 	# ifExpr1
- | IF boolval THEN block (elseif_stat)* (else_stat)? ENDIF ';'				 	# ifExpr2
- | IF ID THEN block (elseif_stat)* (else_stat)? ENDIF ';'				 		# ifExpr3
+ | IF ID THEN block (elseif_stat)* (else_stat)? ENDIF ';'				 		# ifExpr2
  ;  
   
 elseif_stat
  : ELSEIF numorid op=(EQ|GE|LE|LT|GT|NE) numorid THEN block 				# elseifExpr1
- | ELSEIF boolval THEN block 							# elseifExpr2
- | ELSEIF ID THEN block 									# elseifExpr3
+ | ELSEIF ID THEN block 									# elseifExpr2
  ;
 
 else_stat
@@ -93,15 +90,10 @@ for_stat
 
 while_stat
  : WHILE numorid op=(EQ|GE|LE|LT|GT|NE) numorid DO block ENDWL ';'   		# whileExpr1
- | WHILE boolval DO block ENDWL ';' 						# whileExpr2
- | WHILE ID DO block ENDWL ';' 								# whileExpr3 
+ | WHILE ID DO block ENDWL ';' 								# whileExpr2 
  ;
 
 
-boolval
- : TRUE 							# trueExpr
- | FALSE 							# falseExpr
- ;
 
 libcall_stat
  :  funcallexpr ';'			# libcallExpr
@@ -149,8 +141,6 @@ TO : 'TO';
 BY : 'BY';
 ENDFOR : 'ENDFOR';
 
-TRUE : 'TRUE';
-FALSE : 'FALSE';
 
 MOVJ : 'MOVJ';
 MOVL : 'MOVL';

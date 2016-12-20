@@ -111,10 +111,6 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitAssignExpr5(RCcodeParser::AssignExpr5Context *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitGotoExpr(RCcodeParser::GotoExprContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -127,19 +123,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitIfExpr3(RCcodeParser::IfExpr3Context *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitElseifExpr1(RCcodeParser::ElseifExpr1Context *ctx) override {
     return visitChildren(ctx);
   }
 
   virtual antlrcpp::Any visitElseifExpr2(RCcodeParser::ElseifExpr2Context *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitElseifExpr3(RCcodeParser::ElseifExpr3Context *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -156,18 +144,6 @@ public:
   }
 
   virtual antlrcpp::Any visitWhileExpr2(RCcodeParser::WhileExpr2Context *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitWhileExpr3(RCcodeParser::WhileExpr3Context *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitTrueExpr(RCcodeParser::TrueExprContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitFalseExpr(RCcodeParser::FalseExprContext *ctx) override {
     return visitChildren(ctx);
   }
 
