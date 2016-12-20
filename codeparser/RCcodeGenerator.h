@@ -414,55 +414,451 @@ public:
         return dynamic_cast<RCBaseStatement*>(tempStat);
     }
 
-  virtual antlrcpp::Any visitSeteExpr(RCcodeParser::SeteExprContext *ctx) override {
-  	LOGGER_INF("SeteExpr");
-    return visitChildren(ctx);
-  }
+    virtual antlrcpp::Any visitSeteExpr(RCcodeParser::SeteExprContext *ctx) override {
+    	LOGGER_INF("SeteExpr");
+        int line = ctx->SETE()->getSymbol()->getLine();
+        RCDataStatement *tempStat = new RCDataStatement(symbolTable);
 
-  virtual antlrcpp::Any visitGeteExpr(RCcodeParser::GeteExprContext *ctx) override {
-  	LOGGER_INF("GeteExpr");
-    return visitChildren(ctx);
-  }
+        tempStat->lineno = line;
+        tempStat->type = RCDataStatement::SETE;
 
-  virtual antlrcpp::Any visitWaitExpr(RCcodeParser::WaitExprContext *ctx) override {
-  	LOGGER_INF("WaitExpr");
-    return visitChildren(ctx);
-  }
+        std::string strElem = ctx->ELEM()->getText();
+        std::pair<std::string, std::string> pairElem;
+        Utility::parseElem(strElem, pairElem);
 
-  virtual antlrcpp::Any visitDelayExpr(RCcodeParser::DelayExprContext *ctx) override {
-  	LOGGER_INF("DelayExpr");
-    return visitChildren(ctx);
-  }
+        std::string strPoint = pairElem.first;
+        if(dataIndexMap.find(strPoint) != dataIndexMap.end()) {
+            uint8_t t = addrspace[dataIndexMap[strPoint]].type;
+            if(t == TJTPOSE || t == TTRPOSE) {
+                tempStat->elem.first = dataIndexMap[strPoint];
+            } else {
+                int col = ctx->ELEM()->getSymbol()->getCharPositionInLine();
+                throw rc_wrongvartype_exception(line, col, strPoint);
+            }
+        } else {
+            int col = ctx->ELEM()->getSymbol()->getCharPositionInLine();
+            throw rc_pointnotdefined_exception(line, col, strPoint);
+        }
 
-  virtual antlrcpp::Any visitSetoutExpr(RCcodeParser::SetoutExprContext *ctx) override {
-  	LOGGER_INF("SetoutExpr");
-    return visitChildren(ctx);
-  }
+        try{
+            tempStat->elem.second = std::stoi(pairElem.second);
+        } catch(std::exception &e) {
+            int col = ctx->ELEM()->getSymbol()->getCharPositionInLine();
+            throw rc_numformat_exception(line, col+4, strPoint + "(" + pairElem.second + ")");
+        }
 
-  virtual antlrcpp::Any visitDinExpr(RCcodeParser::DinExprContext *ctx) override {
-  	LOGGER_INF("DinExpr");
-    return visitChildren(ctx);
-  }
+        std::string strIndex2 = ctx->ID()->getText();
+        uint8_t index2Type;
+        if(dataIndexMap.find(strIndex2) != dataIndexMap.end()) {
+            index2Type = addrspace[dataIndexMap[strIndex2]].type;
+            tempStat->index2 = dataIndexMap[strIndex2];
+        } else {
+            int col = ctx->ID()->getSymbol()->getCharPositionInLine();
+            throw rc_varnotdefined_exception(line, col, strIndex2);
+        }
 
-  virtual antlrcpp::Any visitIncExpr(RCcodeParser::IncExprContext *ctx) override {
-  	LOGGER_INF("IncExpr");
-    return visitChildren(ctx);
-  }
+        if(index2Type != TINT && index2Type != TDOUBLE) {
+            int col = ctx->ID()->getSymbol()->getCharPositionInLine();
+            throw rc_wrongvartype_exception(line, col, strIndex2);
+        }
 
-  virtual antlrcpp::Any visitDecExpr(RCcodeParser::DecExprContext *ctx) override {
-  	LOGGER_INF("DecExpr");
-    return visitChildren(ctx);
-  }
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
 
-  virtual antlrcpp::Any visitFuncExpr(RCcodeParser::FuncExprContext *ctx) override {
-  	LOGGER_INF("FuncExpr");
-    return visitChildren(ctx);
-  }
+    virtual antlrcpp::Any visitGeteExpr(RCcodeParser::GeteExprContext *ctx) override {
+    	LOGGER_INF("GeteExpr");
+        int line = ctx->GETE()->getSymbol()->getLine();
+        RCDataStatement *tempStat = new RCDataStatement(symbolTable);
 
-  virtual antlrcpp::Any visitCallExpr(RCcodeParser::CallExprContext *ctx) override {
-  	LOGGER_INF("CallExpr");
-    return visitChildren(ctx);
-  }
+        tempStat->lineno = line;
+        tempStat->type = RCDataStatement::GETE;
+
+        std::string strIndex1 = ctx->ID()->getText();
+        uint8_t index1Type;
+        if(dataIndexMap.find(strIndex1) != dataIndexMap.end()) {
+            index1Type = addrspace[dataIndexMap[strIndex1]].type;
+            tempStat->index1 = dataIndexMap[strIndex1];
+        } else {
+            int col = ctx->ID()->getSymbol()->getCharPositionInLine();
+            throw rc_varnotdefined_exception(line, col, strIndex1);
+        }
+
+        if(index1Type != TINT && index1Type != TDOUBLE) {
+            int col = ctx->ID()->getSymbol()->getCharPositionInLine();
+            throw rc_wrongvartype_exception(line, col, strIndex1);
+        }
+
+        std::string strElem = ctx->ELEM()->getText();
+        std::pair<std::string, std::string> pairElem;
+        Utility::parseElem(strElem, pairElem);
+
+        std::string strPoint = pairElem.first;
+        if(dataIndexMap.find(strPoint) != dataIndexMap.end()) {
+            uint8_t t = addrspace[dataIndexMap[strPoint]].type;
+            if(t == TJTPOSE || t == TTRPOSE) {
+                tempStat->elem.first = dataIndexMap[strPoint];
+            } else {
+                int col = ctx->ELEM()->getSymbol()->getCharPositionInLine();
+                throw rc_wrongvartype_exception(line, col, strPoint);
+            }
+        } else {
+            int col = ctx->ELEM()->getSymbol()->getCharPositionInLine();
+            throw rc_pointnotdefined_exception(line, col, strPoint);
+        }
+
+        try{
+            tempStat->elem.second = std::stoi(pairElem.second);
+        } catch(std::exception &e) {
+            int col = ctx->ELEM()->getSymbol()->getCharPositionInLine();
+            throw rc_numformat_exception(line, col+4, strPoint + "(" + pairElem.second + ")");
+        }
+
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
+
+    virtual antlrcpp::Any visitWaitExpr(RCcodeParser::WaitExprContext *ctx) override {
+    	LOGGER_INF("WaitExpr");
+        // WAIT ID op=(EQ|GE|LE|LT|GT|NE) numorid (',' TIME)? ';'
+        int line = ctx->WAIT()->getSymbol()->getLine();
+        RCSignalStatement *tempStat = new RCSignalStatement(symbolTable);
+
+        tempStat->lineno = line;
+        tempStat->type = RCSignalStatement::WAIT;
+
+        std::string strVar = ctx->ID()->getText();
+        if(dataIndexMap.find(strVar) != dataIndexMap.end()) {
+            uint8_t t = addrspace[dataIndexMap[strVar]].type;
+            if(Utility::checkNum(t)) {
+                tempStat->index1 = dataIndexMap[strVar];
+            } else {
+                int col = ctx->ID()->getSymbol()->getCharPositionInLine();
+                throw rc_wrongvartype_exception(line, col, strVar);
+            }
+        } else {
+            int col = ctx->ID()->getSymbol()->getCharPositionInLine();
+            throw rc_varnotdefined_exception(line, col, strVar);
+        }
+
+        if(ctx->op->getType() == RCcodeParser::EQ) tempStat->op = RCSignalStatement::EQ;
+        if(ctx->op->getType() == RCcodeParser::GE) tempStat->op = RCSignalStatement::GE;
+        if(ctx->op->getType() == RCcodeParser::GT) tempStat->op = RCSignalStatement::GT;
+        if(ctx->op->getType() == RCcodeParser::LE) tempStat->op = RCSignalStatement::LE;
+        if(ctx->op->getType() == RCcodeParser::LT) tempStat->op = RCSignalStatement::LT;
+        if(ctx->op->getType() == RCcodeParser::NE) tempStat->op = RCSignalStatement::NE;
+
+        int index2 = visit(ctx->numorid()) ;
+        if(Utility::checkNum(addrspace[index2].type)) {
+            tempStat->index2 = index2;
+        } else {
+            throw rc_wrongvartype_exception(line, 0, "second argument");
+        }
+
+        if(ctx->TIME() != NULL) {
+            std::string strTime = ctx->TIME()->getText();
+            try{
+                tempStat->time = std::stod(strTime.substr(1));
+            }catch(std::exception &e) {
+                int col = ctx->TIME()->getSymbol()->getCharPositionInLine();
+                throw rc_wrongvartype_exception(line, col, strTime);
+            }
+        }
+
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
+
+    virtual antlrcpp::Any visitDelayExpr(RCcodeParser::DelayExprContext *ctx) override {
+    	LOGGER_INF("DelayExpr");
+        // DELAY TIME ';'                         
+        int line = ctx->DELAY()->getSymbol()->getLine();
+        RCSignalStatement *tempStat = new RCSignalStatement(symbolTable);
+
+        tempStat->lineno = line;
+        tempStat->type = RCSignalStatement::DELAY;
+
+        if(ctx->TIME() != NULL) {
+            std::string strTime = ctx->TIME()->getText();
+            try{
+                tempStat->time = std::stod(strTime.substr(1));
+            }catch(std::exception &e) {
+                int col = ctx->TIME()->getSymbol()->getCharPositionInLine();
+                throw rc_wrongvartype_exception(line, col, strTime);
+            }
+        }
+
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
+
+    virtual antlrcpp::Any visitSetoutExpr(RCcodeParser::SetoutExprContext *ctx) override {
+    	LOGGER_INF("SetoutExpr");
+        // SETOUT ID ',' numorid ';'
+        int line = ctx->SETOUT()->getSymbol()->getLine();
+        RCSignalStatement *tempStat = new RCSignalStatement(symbolTable);
+
+        tempStat->lineno = line;
+        tempStat->type = RCSignalStatement::SETOUT;       
+
+        std::string strVar = ctx->ID()->getText();
+        if(dataIndexMap.find(strVar) != dataIndexMap.end()) {
+            uint8_t t = addrspace[dataIndexMap[strVar]].type;
+            if(Utility::checkNum(t)) {
+                tempStat->index1 = dataIndexMap[strVar];
+            } else {
+                int col = ctx->ID()->getSymbol()->getCharPositionInLine();
+                throw rc_wrongvartype_exception(line, col, strVar);
+            }
+        } else {
+            int col = ctx->ID()->getSymbol()->getCharPositionInLine();
+            throw rc_varnotdefined_exception(line, col, strVar);
+        }
+
+        int index2 = visit(ctx->numorid()) ;
+        if(Utility::checkNum(addrspace[index2].type)) {
+            tempStat->index2 = index2;
+        } else {
+            throw rc_wrongvartype_exception(line, 0, "second argument");
+        }
+
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
+
+    virtual antlrcpp::Any visitDinExpr(RCcodeParser::DinExprContext *ctx) override {
+    	LOGGER_INF("DinExpr");
+        // DIN ID ',' ID ';'
+        int line = ctx->DIN()->getSymbol()->getLine();
+        RCSignalStatement *tempStat = new RCSignalStatement(symbolTable);
+
+        tempStat->lineno = line;
+        tempStat->type = RCSignalStatement::DIN;    
+
+        std::string strIndex1 = ctx->ID(0)->getText();
+        if(dataIndexMap.find(strIndex1) != dataIndexMap.end()) {
+            uint8_t t = addrspace[dataIndexMap[strIndex1]].type;
+            if(Utility::checkNum(t)) {
+                tempStat->index1 = dataIndexMap[strIndex1];
+            } else {
+                int col = ctx->ID(0)->getSymbol()->getCharPositionInLine();
+                throw rc_wrongvartype_exception(line, col, strIndex1);
+            }
+        } else {
+            int col = ctx->ID(0)->getSymbol()->getCharPositionInLine();
+            throw rc_varnotdefined_exception(line, col, strIndex1);
+        }
+
+        std::string strIndex2 = ctx->ID(1)->getText();
+        if(dataIndexMap.find(strIndex2) != dataIndexMap.end()) {
+            uint8_t t = addrspace[dataIndexMap[strIndex2]].type;
+            if(Utility::checkNum(t)) {
+                tempStat->index2 = dataIndexMap[strIndex2];
+            } else {
+                int col = ctx->ID(1)->getSymbol()->getCharPositionInLine();
+                throw rc_wrongvartype_exception(line, col, strIndex2);
+            }
+        } else {
+            int col = ctx->ID(1)->getSymbol()->getCharPositionInLine();
+            throw rc_varnotdefined_exception(line, col, strIndex2);
+        }
+
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
+
+    virtual antlrcpp::Any visitIncExpr(RCcodeParser::IncExprContext *ctx) override {
+    	LOGGER_INF("IncExpr");
+        // INCR ID ';'
+        int line = ctx->INCR()->getSymbol()->getLine();
+        RCMathStatement *tempStat = new RCMathStatement(symbolTable);
+
+        tempStat->lineno = line;
+        tempStat->type = RCMathStatement::INCR;   
+
+        std::string strVar = ctx->ID()->getText();
+        if(dataIndexMap.find(strVar) != dataIndexMap.end()) {
+            uint8_t t = addrspace[dataIndexMap[strVar]].type;
+            if(Utility::checkNum(t)) {
+                tempStat->index1 = dataIndexMap[strVar];
+            } else {
+                int col = ctx->ID()->getSymbol()->getCharPositionInLine();
+                throw rc_wrongvartype_exception(line, col, strVar);
+            }
+        } else {
+            int col = ctx->ID()->getSymbol()->getCharPositionInLine();
+            throw rc_varnotdefined_exception(line, col, strVar);
+        }
+
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
+
+    virtual antlrcpp::Any visitDecExpr(RCcodeParser::DecExprContext *ctx) override {
+    	LOGGER_INF("DecExpr");
+        // DECR ID ';'
+        int line = ctx->DECR()->getSymbol()->getLine();
+        RCMathStatement *tempStat = new RCMathStatement(symbolTable);
+
+        tempStat->lineno = line;
+        tempStat->type = RCMathStatement::DECR;   
+
+        std::string strVar = ctx->ID()->getText();
+        if(dataIndexMap.find(strVar) != dataIndexMap.end()) {
+            uint8_t t = addrspace[dataIndexMap[strVar]].type;
+            if(Utility::checkNum(t)) {
+                tempStat->index1 = dataIndexMap[strVar];
+            } else {
+                int col = ctx->ID()->getSymbol()->getCharPositionInLine();
+                throw rc_wrongvartype_exception(line, col, strVar);
+            }
+        } else {
+            int col = ctx->ID()->getSymbol()->getCharPositionInLine();
+            throw rc_varnotdefined_exception(line, col, strVar);
+        }
+
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
+
+    virtual antlrcpp::Any visitFuncExpr(RCcodeParser::FuncExprContext *ctx) override {
+    	LOGGER_INF("FuncExpr");
+        // FUNC op1=(ELEM | ID) ',' op2=(ELEM | ID | NUM)';'
+        int line = ctx->FUNC()->getSymbol()->getLine();
+        RCMathStatement *tempStat = new RCMathStatement(symbolTable);
+
+        tempStat->lineno = line;
+
+        std::string funcName = ctx->FUNC()->getText();
+        if(funcName == "ADD") tempStat->type = RCMathStatement::ADD;
+        else if(funcName == "SUB") tempStat->type = RCMathStatement::SUB;
+        else if(funcName == "MUL") tempStat->type = RCMathStatement::MUL;
+        else if(funcName == "DIV") tempStat->type = RCMathStatement::DIV;
+        else if(funcName == "SIN") tempStat->type = RCMathStatement::SIN;
+        else if(funcName == "COS") tempStat->type = RCMathStatement::COS;
+        else if(funcName == "ATAN") tempStat->type = RCMathStatement::ATAN;
+        else if(funcName == "SQRT") tempStat->type = RCMathStatement::SQRT;
+        else if(funcName == "OR") tempStat->type = RCMathStatement::OR;
+        else if(funcName == "AND") tempStat->type = RCMathStatement::AND;
+        else if(funcName == "NOT") tempStat->type = RCMathStatement::NOT;
+        else if(funcName == "XOR") tempStat->type = RCMathStatement::XOR;
+        else {
+            throw rc_nullinstruction_exception(line, 0, funcName);
+        } 
+
+        int elemIndex = 0;
+        int idIndex = 0;
+        if(ctx->op1->getType() == RCcodeParser::ELEM) {
+            
+            std::string strElem = ctx->ELEM(elemIndex)->getText();
+            std::pair<std::string, std::string> pairElem;
+            Utility::parseElem(strElem, pairElem);
+
+            std::string strPoint = pairElem.first;
+            if(dataIndexMap.find(strPoint) != dataIndexMap.end()) {
+                uint8_t t = addrspace[dataIndexMap[strPoint]].type;
+                if(t == TJTPOSE || t == TTRPOSE) {
+                    tempStat->elem1.first = dataIndexMap[strPoint];
+                } else {
+                    int col = ctx->ELEM(elemIndex)->getSymbol()->getCharPositionInLine();
+                    throw rc_wrongvartype_exception(line, col, strPoint);
+                }
+            } else {
+                int col = ctx->ELEM(elemIndex)->getSymbol()->getCharPositionInLine();
+                throw rc_pointnotdefined_exception(line, col, strPoint);
+            }
+
+            try{
+                tempStat->elem1.second = std::stoi(pairElem.second);
+            } catch(std::exception &e) {
+                int col = ctx->ELEM(elemIndex)->getSymbol()->getCharPositionInLine();
+                throw rc_numformat_exception(line, col+4, strPoint + "(" + pairElem.second + ")");
+            }
+            elemIndex ++;
+        } else {
+            std::string strVar = ctx->ID(idIndex)->getText();
+            if(dataIndexMap.find(strVar) != dataIndexMap.end()) {
+                uint8_t t = addrspace[dataIndexMap[strVar]].type;
+                if(Utility::checkNum(t)) {
+                    tempStat->index1 = dataIndexMap[strVar];
+                } else {
+                    int col = ctx->ID(idIndex)->getSymbol()->getCharPositionInLine();
+                    throw rc_wrongvartype_exception(line, col, strVar);
+                }
+            } else {
+                int col = ctx->ID(idIndex)->getSymbol()->getCharPositionInLine();
+                throw rc_varnotdefined_exception(line, col, strVar);
+            }
+            idIndex ++;
+        }
+
+        if(ctx->op2->getType() == RCcodeParser::ELEM) {
+            std::string strElem = ctx->ELEM(elemIndex)->getText();
+            std::pair<std::string, std::string> pairElem;
+            Utility::parseElem(strElem, pairElem);
+
+            std::string strPoint = pairElem.first;
+            if(dataIndexMap.find(strPoint) != dataIndexMap.end()) {
+                uint8_t t = addrspace[dataIndexMap[strPoint]].type;
+                if(t == TJTPOSE || t == TTRPOSE) {
+                    tempStat->elem2.first = dataIndexMap[strPoint];
+                } else {
+                    int col = ctx->ELEM(elemIndex)->getSymbol()->getCharPositionInLine();
+                    throw rc_wrongvartype_exception(line, col, strPoint);
+                }
+            } else {
+                int col = ctx->ELEM(elemIndex)->getSymbol()->getCharPositionInLine();
+                throw rc_pointnotdefined_exception(line, col, strPoint);
+            }
+
+            try{
+                tempStat->elem2.second = std::stoi(pairElem.second);
+            } catch(std::exception &e) {
+                int col = ctx->ELEM(elemIndex)->getSymbol()->getCharPositionInLine();
+                throw rc_numformat_exception(line, col+4, strPoint + "(" + pairElem.second + ")");
+            }
+        } else if(ctx->op2->getType() == RCcodeParser::ID) {
+            std::string strVar = ctx->ID(idIndex)->getText();
+            if(dataIndexMap.find(strVar) != dataIndexMap.end()) {
+                uint8_t t = addrspace[dataIndexMap[strVar]].type;
+                if(Utility::checkNum(t)) {
+                    tempStat->index2 = dataIndexMap[strVar];
+                } else {
+                    int col = ctx->ID(idIndex)->getSymbol()->getCharPositionInLine();
+                    throw rc_wrongvartype_exception(line, col, strVar);
+                }
+            } else {
+                int col = ctx->ID(idIndex)->getSymbol()->getCharPositionInLine();
+                throw rc_varnotdefined_exception(line, col, strVar);
+            }
+        } else {
+            std::string strNum = ctx->NUM()->getText();
+            if(constIndexMap.find(strNum) == constIndexMap.end()) {
+                int index = addrspace.size();
+                try{
+                    if(Utility::checkInt(strNum)) {
+                        int constVal = Utility::parseInt(strNum);
+                        constIndexMap.insert({strNum, index});
+                        addrspace.push_back(RC_IValue(TINT, constVal));
+                    } else {
+                        double constVal = Utility::parseDouble(strNum);
+                        constIndexMap.insert({strNum, index});
+                        addrspace.push_back(RC_IValue(TDOUBLE, constVal));
+                    }
+                    tempStat->index2 = index;
+                } catch(std::exception &e) {
+                    int col = ctx->NUM()->getSymbol()->getCharPositionInLine();
+                    throw rc_numformat_exception(line, col, strNum);
+                }
+            } else {
+                tempStat->index2 = constIndexMap[strNum];
+            }
+        }
+
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
+
+    virtual antlrcpp::Any visitCallExpr(RCcodeParser::CallExprContext *ctx) override {
+    	LOGGER_INF("CallExpr");
+        // CALL ID ';'
+        int line = ctx->CALL()->getSymbol()->getLine();
+        RCCallStatement *tempStat = new RCCallStatement(symbolTable);
+        tempStat->lineno = line;
+        tempStat->programName = ctx->ID()->getText();
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
 
   virtual antlrcpp::Any visitAssignExpr1(RCcodeParser::AssignExpr1Context *ctx) override {
   	LOGGER_INF("AssignExpr1");
@@ -489,10 +885,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitGotoExpr(RCcodeParser::GotoExprContext *ctx) override {
-  	LOGGER_INF("GotoExpr");
-    return visitChildren(ctx);
-  }
+    virtual antlrcpp::Any visitGotoExpr(RCcodeParser::GotoExprContext *ctx) override {
+    	LOGGER_INF("GotoExpr");
+        
+        return visitChildren(ctx);
+    }
 
   virtual antlrcpp::Any visitIfExpr1(RCcodeParser::IfExpr1Context *ctx) override {
   	LOGGER_INF("IfExpr1");
@@ -574,48 +971,111 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitNumExpr(RCcodeParser::NumExprContext *ctx) override {
-  	LOGGER_INF("NumExpr");
-    return visitChildren(ctx);
-  }
+    virtual antlrcpp::Any visitNumExpr(RCcodeParser::NumExprContext *ctx) override {
+    	LOGGER_INF("NumExpr");
+        int line = ctx->NUM()->getSymbol()->getLine();
 
-  virtual antlrcpp::Any visitIdExpr(RCcodeParser::IdExprContext *ctx) override {
-  	LOGGER_INF("IdExpr");
-    return visitChildren(ctx);
-  }
+        std::string strNum = ctx->NUM()->getText();
+        if(constIndexMap.find(strNum) == constIndexMap.end()) {
+            int index = addrspace.size();
+            try{
+                if(Utility::checkInt(strNum)) {
+                    int constVal = Utility::parseInt(strNum);
+                    constIndexMap.insert({strNum, index});
+                    addrspace.push_back(RC_IValue(TINT, constVal));
+                    return index;
+                } else {
+                    double constVal = Utility::parseDouble(strNum);
+                    constIndexMap.insert({strNum, index});
+                    addrspace.push_back(RC_IValue(TDOUBLE, constVal));
+                    return index;
+                }
+            } catch(std::exception &e) {
+                int col = ctx->NUM()->getSymbol()->getCharPositionInLine();
+                throw rc_numformat_exception(line, col, strNum);
+            }
+        } else {
+            return constIndexMap[strNum];
+        }
+    }
 
-  virtual antlrcpp::Any visitOneinstExpr(RCcodeParser::OneinstExprContext *ctx) override {
-  	LOGGER_INF("OneinstExpr");
-    return visitChildren(ctx);
-  }
+    virtual antlrcpp::Any visitIdExpr(RCcodeParser::IdExprContext *ctx) override {
+    	LOGGER_INF("IdExpr");
+        int line = ctx->ID()->getSymbol()->getLine();
 
-  virtual antlrcpp::Any visitLabelExpr(RCcodeParser::LabelExprContext *ctx) override {
-  	LOGGER_INF("LabelExpr");
-    return visitChildren(ctx);
-  }
+        std::string strVar = ctx->ID()->getText();
+        if(dataIndexMap.find(strVar) != dataIndexMap.end()) {
+            return dataIndexMap[strVar];
+        } else {
+            int col = ctx->ID()->getSymbol()->getCharPositionInLine();
+            throw rc_varnotdefined_exception(line, col, strVar);
+        }
+    }
 
-  virtual antlrcpp::Any visitRetExpr(RCcodeParser::RetExprContext *ctx) override {
-  	LOGGER_INF("RetExpr");
-    return visitChildren(ctx);
-  }
 
-  virtual antlrcpp::Any visitNopExpr(RCcodeParser::NopExprContext *ctx) override {
-  	LOGGER_INF("NopExpr");
-    return visitChildren(ctx);
-  }
+    virtual antlrcpp::Any visitLabelExpr(RCcodeParser::LabelExprContext *ctx) override {
+    	LOGGER_INF("LabelExpr");
+        int line = ctx->LABEL()->getSymbol()->getLine();
+        RCSingleInstStatemement *tempStat = new RCSingleInstStatemement(symbolTable);
 
-  virtual antlrcpp::Any visitPauseExpr(RCcodeParser::PauseExprContext *ctx) override {
-  	LOGGER_INF("PauseExpr");
-    return visitChildren(ctx);
-  }
+        tempStat->lineno = line;
+        tempStat->type = RCSingleInstStatemement::LABEL;   
 
-  virtual antlrcpp::Any visitHaltExpr(RCcodeParser::HaltExprContext *ctx) override {
-  	LOGGER_INF("HaltExpr");
-    return visitChildren(ctx);
-  }
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
 
-  virtual antlrcpp::Any visitBreakExpr(RCcodeParser::BreakExprContext *ctx) override {
-  	LOGGER_INF("BreakExpr");
-    return visitChildren(ctx);
-  }
+    virtual antlrcpp::Any visitRetExpr(RCcodeParser::RetExprContext *ctx) override {
+    	LOGGER_INF("RetExpr");
+        int line = ctx->RET()->getSymbol()->getLine();
+        RCSingleInstStatemement *tempStat = new RCSingleInstStatemement(symbolTable);
+
+        tempStat->lineno = line;
+        tempStat->type = RCSingleInstStatemement::RET;   
+
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
+
+    virtual antlrcpp::Any visitNopExpr(RCcodeParser::NopExprContext *ctx) override {
+    	LOGGER_INF("NopExpr");
+        int line = ctx->NOP()->getSymbol()->getLine();
+        RCSingleInstStatemement *tempStat = new RCSingleInstStatemement(symbolTable);
+
+        tempStat->lineno = line;
+        tempStat->type = RCSingleInstStatemement::NOP;   
+
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
+
+    virtual antlrcpp::Any visitPauseExpr(RCcodeParser::PauseExprContext *ctx) override {
+    	LOGGER_INF("PauseExpr");
+        int line = ctx->PAUSE()->getSymbol()->getLine();
+        RCSingleInstStatemement *tempStat = new RCSingleInstStatemement(symbolTable);
+
+        tempStat->lineno = line;
+        tempStat->type = RCSingleInstStatemement::PAUSE;   
+
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
+
+    virtual antlrcpp::Any visitHaltExpr(RCcodeParser::HaltExprContext *ctx) override {
+    	LOGGER_INF("HaltExpr");
+        int line = ctx->HALT()->getSymbol()->getLine();
+        RCSingleInstStatemement *tempStat = new RCSingleInstStatemement(symbolTable);
+
+        tempStat->lineno = line;
+        tempStat->type = RCSingleInstStatemement::HALT;   
+
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
+
+    virtual antlrcpp::Any visitBreakExpr(RCcodeParser::BreakExprContext *ctx) override {
+    	LOGGER_INF("BreakExpr");
+        int line = ctx->BREAK()->getSymbol()->getLine();
+        RCSingleInstStatemement *tempStat = new RCSingleInstStatemement(symbolTable);
+
+        tempStat->lineno = line;
+        tempStat->type = RCSingleInstStatemement::BREAK;   
+
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
 };

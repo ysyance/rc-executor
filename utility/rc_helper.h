@@ -132,6 +132,17 @@ public:
 		return std::stoi(str.substr(1));
 	}
 
+
+	static int parseElem(std::string &str, std::pair<std::string, std::string> &elem) {
+		int size = str.size();
+		if(size < 4) return -1;
+		int pos = str.find("(");
+		if(pos == std::string::npos) return -1;
+		elem.first = str.substr(0, pos);
+		elem.second = str.substr(pos+1, 1);
+		return 0;
+	}
+
 public:
 	static bool checkTypeMatch(uint8_t type1, uint8_t type2) {
 		if(type1 == TBOOL || type1 == TCHAR || type1 == TINT || type1 == TDOUBLE) {
@@ -159,9 +170,17 @@ public:
 	}
 	
 
-private:
+public:
 	static bool checkInt(std::string &str) {
 		return str.find(".") == std::string::npos;
+	}
+
+	static bool checkNum(uint8_t type) {
+		if(type == TBOOL || type == TCHAR || type == TINT || type == TDOUBLE) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	static bool startWith(std::string &str, std::string &pattern) {

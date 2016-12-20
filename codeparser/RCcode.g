@@ -122,16 +122,12 @@ numorid
  ;
 
 oneinst_stat
- : oneinst ';'	# oneinstExpr
- ;
-
-oneinst
- : LABEL 	 	# labelExpr
- | RET 		 	# retExpr
- | NOP 			# nopExpr
- | PAUSE 		# pauseExpr
- | HALT 		# haltExpr
- | BREAK 		# breakExpr
+ : LABEL ';'	 	# labelExpr
+ | RET 	';'	 		# retExpr
+ | NOP 	';'			# nopExpr
+ | PAUSE ';'		# pauseExpr
+ | HALT ';'			# haltExpr
+ | BREAK ';'		# breakExpr
  ;
 
 GOTO : 'GOTO';

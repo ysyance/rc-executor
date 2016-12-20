@@ -89,6 +89,8 @@ int main() {
 		std::cout << "C++ runtime exception" << std::endl;
 	}
 
+	Utility::printfAPDataSpace(apaddr);
+	Utility::printfCPDataSpace(cpaddr);
 	Utility::printfAddrspace(addrspace);
 	Utility::printfCodeShadow(code);
 

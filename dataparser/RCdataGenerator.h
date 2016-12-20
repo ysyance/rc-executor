@@ -107,7 +107,7 @@ public:
 		}
 		// Check Duplicate Definition
 		if(dataIndexMap.find(varName) == dataIndexMap.end()) {
-			int index = dataIndexMap.size();
+			int index = addrspace.size();
 			dataIndexMap.insert({varName, index});
 			addrspace.push_back(RC_IValue(TBOOL, varVal));
 		} else {
@@ -142,7 +142,7 @@ public:
 		}
 		// Check Duplicate Definition
 		if(dataIndexMap.find(varName) == dataIndexMap.end()) {
-			int index = dataIndexMap.size();
+			int index = addrspace.size();
 			dataIndexMap.insert({varName, index});
 			addrspace.push_back(RC_IValue(TCHAR, varVal));
 		} else {
@@ -174,7 +174,7 @@ public:
 		}
 		// Check Duplicate Definition
 		if(dataIndexMap.find(varName) == dataIndexMap.end()) {
-			int index = dataIndexMap.size();
+			int index = addrspace.size();
 			dataIndexMap.insert({varName, index});
 			addrspace.push_back(RC_IValue(TINT, varVal));
 		} else {
@@ -204,7 +204,7 @@ public:
 		}
 		// Check Duplicate Definition
 		if(dataIndexMap.find(varName) == dataIndexMap.end()) {
-			int index = dataIndexMap.size();
+			int index = addrspace.size();
 			dataIndexMap.insert({varName, index});
 			addrspace.push_back(RC_IValue(TDOUBLE, varVal));
 		} else {
@@ -231,7 +231,7 @@ public:
 		}
 		// Check Duplicate Definition
 		if(dataIndexMap.find(varName) == dataIndexMap.end()) {
-			int index = dataIndexMap.size();
+			int index = addrspace.size();
 			dataIndexMap.insert({varName, index});
 
 			strIndex = stringpool.size();
@@ -258,7 +258,7 @@ public:
 
 		// Check Duplicate Definition
 		if(dataIndexMap.find(varName) == dataIndexMap.end()) {
-			int index = dataIndexMap.size();
+			int index = addrspace.size();
 			dataIndexMap.insert({varName, index});
 
 			IJtpose poseIndex = apaddr.size();
@@ -285,7 +285,7 @@ public:
 
 		// Check Duplicate Definition
 		if(dataIndexMap.find(varName) == dataIndexMap.end()) {
-			int index = dataIndexMap.size();
+			int index = addrspace.size();
 			dataIndexMap.insert({varName, index});
 
 			IJtpose poseIndex = apaddr.size();
@@ -312,7 +312,7 @@ public:
 
 		// Check Duplicate Definition
 		if(dataIndexMap.find(varName) == dataIndexMap.end()) {
-			int index = dataIndexMap.size();
+			int index = addrspace.size();
 			dataIndexMap.insert({varName, index});
 
 			ITrpose poseIndex = cpaddr.size();
@@ -339,7 +339,7 @@ public:
 
 		// Check Duplicate Definition
 		if(dataIndexMap.find(varName) == dataIndexMap.end()) {
-			int index = dataIndexMap.size();
+			int index = addrspace.size();
 			dataIndexMap.insert({varName, index});
 
 			ITrpose poseIndex = cpaddr.size();
@@ -366,7 +366,7 @@ public:
 
 		// Check Duplicate Definition
 		if(dataIndexMap.find(varName) == dataIndexMap.end()) {
-			int index = dataIndexMap.size();
+			int index = addrspace.size();
 			dataIndexMap.insert({varName, index});
 
 			ITrpose poseIndex = cpaddr.size();
@@ -393,7 +393,7 @@ public:
 
 		// Check Duplicate Definition
 		if(dataIndexMap.find(varName) == dataIndexMap.end()) {
-			int index = dataIndexMap.size();
+			int index = addrspace.size();
 			dataIndexMap.insert({varName, index});
 
 			ITooldata toolIndex = tooladdr.size();
@@ -465,7 +465,7 @@ public:
 
 		// Check Duplicate Definition
 		if(dataIndexMap.find(varName) == dataIndexMap.end()) {
-			int index = dataIndexMap.size();
+			int index = addrspace.size();
 			dataIndexMap.insert({varName, index});
 
 			ICoordata coordIndex = cooraddr.size();

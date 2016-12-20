@@ -29,8 +29,7 @@ public:
     RuleSignal_stat = 5, RuleMath_stat = 6, RuleCall_stat = 7, RuleAssign_stat = 8, 
     RuleGoto_stat = 9, RuleIf_stat = 10, RuleElseif_stat = 11, RuleElse_stat = 12, 
     RuleFor_stat = 13, RuleWhile_stat = 14, RuleBoolval = 15, RuleLibcall_stat = 16, 
-    RuleFuncallexpr = 17, RuleParams = 18, RuleNumorid = 19, RuleOneinst_stat = 20, 
-    RuleOneinst = 21
+    RuleFuncallexpr = 17, RuleParams = 18, RuleNumorid = 19, RuleOneinst_stat = 20
   };
 
   RCcodeParser(antlr4::TokenStream *input);
@@ -63,8 +62,7 @@ public:
   class FuncallexprContext;
   class ParamsContext;
   class NumoridContext;
-  class Oneinst_statContext;
-  class OneinstContext; 
+  class Oneinst_statContext; 
 
   class  ProgContext : public antlr4::ParserRuleContext {
   public:
@@ -874,78 +872,55 @@ public:
    
   };
 
-  class  OneinstExprContext : public Oneinst_statContext {
+  class  NopExprContext : public Oneinst_statContext {
   public:
-    OneinstExprContext(Oneinst_statContext *ctx);
-
-    OneinstContext *oneinst();
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  Oneinst_statContext* oneinst_stat();
-
-  class  OneinstContext : public antlr4::ParserRuleContext {
-  public:
-    OneinstContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-   
-    OneinstContext() : antlr4::ParserRuleContext() { }
-    void copyFrom(OneinstContext *context);
-    using antlr4::ParserRuleContext::copyFrom;
-
-    virtual size_t getRuleIndex() const override;
-
-   
-  };
-
-  class  NopExprContext : public OneinstContext {
-  public:
-    NopExprContext(OneinstContext *ctx);
+    NopExprContext(Oneinst_statContext *ctx);
 
     antlr4::tree::TerminalNode *NOP();
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
-  class  HaltExprContext : public OneinstContext {
+  class  HaltExprContext : public Oneinst_statContext {
   public:
-    HaltExprContext(OneinstContext *ctx);
+    HaltExprContext(Oneinst_statContext *ctx);
 
     antlr4::tree::TerminalNode *HALT();
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
-  class  RetExprContext : public OneinstContext {
+  class  RetExprContext : public Oneinst_statContext {
   public:
-    RetExprContext(OneinstContext *ctx);
+    RetExprContext(Oneinst_statContext *ctx);
 
     antlr4::tree::TerminalNode *RET();
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
-  class  PauseExprContext : public OneinstContext {
+  class  PauseExprContext : public Oneinst_statContext {
   public:
-    PauseExprContext(OneinstContext *ctx);
+    PauseExprContext(Oneinst_statContext *ctx);
 
     antlr4::tree::TerminalNode *PAUSE();
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
-  class  LabelExprContext : public OneinstContext {
+  class  LabelExprContext : public Oneinst_statContext {
   public:
-    LabelExprContext(OneinstContext *ctx);
+    LabelExprContext(Oneinst_statContext *ctx);
 
     antlr4::tree::TerminalNode *LABEL();
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
-  class  BreakExprContext : public OneinstContext {
+  class  BreakExprContext : public Oneinst_statContext {
   public:
-    BreakExprContext(OneinstContext *ctx);
+    BreakExprContext(Oneinst_statContext *ctx);
 
     antlr4::tree::TerminalNode *BREAK();
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
-  OneinstContext* oneinst();
+  Oneinst_statContext* oneinst_stat();
 
 
 private:

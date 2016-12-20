@@ -36,6 +36,73 @@ public:
 };
 
 
+class RCCallStatement : public RCBaseStatement {
+public:
+	RCCallStatement(RC_SymbolTable &sym) :  RCBaseStatement(sym)
+											 {}
+public:
+	virtual int execute(void *cookie) override {
+
+	}
+
+public:
+	std::string programName;
+
+public:
+	virtual void printInfo() override {
+		std::cout << "[Line " << lineno << "] ";
+		std::cout << "Call " << programName << std::endl;
+	}
+	
+};
+
+
+class RCSingleInstStatemement : public RCBaseStatement {
+public:
+	enum INST_TYPE{
+		NONE = 0, RET = 1, NOP = 2, PAUSE = 3, HALT = 4, BREAK = 5, LABEL = 6
+	};
+public:
+	RCSingleInstStatemement(RC_SymbolTable &sym) :  RCBaseStatement(sym), 
+											type(NONE)
+											 {}
+public:
+	virtual int execute(void *cookie) override {
+		switch(type) {
+			case RET:
+			break;
+			case NOP:
+			break;
+			case PAUSE:
+			break;
+			case HALT:
+			break;
+			case BREAK:
+			break;
+			case LABEL:
+			break;
+			default:
+			break;
+		}
+
+	}
+
+public:
+	INST_TYPE type;
+
+public:
+	virtual void printInfo() {
+		std::cout << "[Line " << lineno << "] ";
+		if(type == RET) std::cout << "RET" << std::endl;
+		else if(type == NOP) std::cout << "NOP" << std::endl;
+		else if(type == PAUSE) std::cout << "PAUSE" << std::endl;
+		else if(type == HALT) std::cout << "HALT" << std::endl;
+		else if(type == BREAK) std::cout << "BREAK" << std::endl;
+		else if(type == LABEL) std::cout << "LABEL" << std::endl;
+	}
+};
+
+
 class RCRobotStatement : public RCBaseStatement {
 public:
 	enum INST_TYPE {
@@ -80,7 +147,7 @@ public:
 	std::string frame;
 
 public:
-	virtual void printInfo() {
+	virtual void printInfo() override{
 		std::cout << "[Line " << lineno << "]";
 		if(type == MOVJ) 
 			std::cout << " MOVJ " << endpointIndex << " V" << speed << " Z" << Z << std::endl;
@@ -97,6 +164,8 @@ public:
 	}
 
 };
+
+
 
 
 class RCDataStatement : public RCBaseStatement {
@@ -131,10 +200,14 @@ public:
 	std::pair<uint32_t, uint32_t> elem;
 
 public:
-	virtual void printInfo() {
+	virtual void printInfo() override{
 		std::cout << "[Line " << lineno << "]";
 		if(type == SET) {
 			std::cout << " SET " << index1 << " " << index2 << std::endl;
+		} else if(type == SETE) {
+			std::cout << " SETE " << elem.first << "(" << elem.second << ") " << index2 << std::endl;
+		} else if(type == GETE) {
+			std::cout << " GETE " << index1 << " " << elem.first << "(" << elem.second << ")" << std::endl;
 		}
 	}
 
@@ -145,9 +218,13 @@ public:
 	enum INST_TYPE {
 		NONE = 0, WAIT = 1, DELAY = 2, SETOUT = 3, DIN = 4
 	};
+	enum OP_TYPE {
+		EQ = 0, GE = 1, GT = 2, LE = 3, LT = 4, NE = 5
+	};
 public:
 	RCSignalStatement(RC_SymbolTable &sym) : RCBaseStatement(sym), 
 											 type(NONE),
+											 op(EQ),
 											 time(0),
 											 index1(0),
 											 index2(0)
@@ -170,9 +247,24 @@ public:
 
 public:
 	INST_TYPE type;
-	uint32_t time;
+	OP_TYPE op;
+	double time;
 	uint32_t index1;
 	uint32_t index2;
+
+public:
+	virtual void printInfo() override {
+		std::cout << "[Line " << lineno << "]";
+		if(type == WAIT) {
+			std::cout << " WAIT " << index1 << " op<" << op << "> " << index2 << " T" << time << std::endl;
+		} else if(type == DELAY) {
+			std::cout << " DELAY " << "T" << time << std::endl;
+		} else if(type == SETOUT) {
+			std::cout << " SETOUT " << index1 << " " << index2 << std::endl;
+		} else if(type == DIN) {
+			std::cout << " DIN " << index1 << " " << index2 << std::endl;
+		}
+	}
 };
 
 
@@ -231,12 +323,43 @@ public:
 	uint32_t type;
 	uint32_t index1;
 	uint32_t index2;
+	std::pair<int32_t, int32_t> elem1;
+	std::pair<int32_t, int32_t> elem2;
+
+
+public:
+	virtual void printInfo() override {
+		std::cout << "[Line " << lineno << "]";
+		if(type == INCR) {
+			std::cout << " INCR " << index1 << std::endl;
+		} else if(type == DECR) {
+			std::cout << " DECR " << index1 << std::endl;
+		} else  {
+			if(type == ADD) std::cout << " ADD " ;
+			else if(type == SUB) std::cout << " SUB " ;
+			else if(type == MUL) std::cout << " MUL ";
+			else if(type == DIV) std::cout << " DIV ";
+			else if(type == SIN) std::cout << " SIN ";
+			else if(type == COS) std::cout << " COS ";
+			else if(type == ATAN) std::cout << " ATAN ";
+			else if(type == SQRT) std::cout << " SQRT ";
+			else if(type == AND) std::cout << " AND ";
+			else if(type == OR) std::cout << " OR ";
+			else if(type == NOT) std::cout << " NOT ";
+			else if(type == XOR) std::cout << " XOR ";
+			if(index1 == 0) std::cout << elem1.first << "(" << elem1.second << ") ";
+			else std::cout << index1 << " ";
+			if(index2 == 0) std::cout << elem2.first << "(" << elem2.second << ") ";
+			else std::cout << index2 << " " << std::endl;
+		}
+
+	}
 };
 
 
-class RCCallStatement : public RCBaseStatement {
+class RCLibCallStatement : public RCBaseStatement {
 public:
-	RCCallStatement(RC_SymbolTable &sym) : RCBaseStatement(sym), 
+	RCLibCallStatement(RC_SymbolTable &sym) : RCBaseStatement(sym), 
 											 index(0)
 											 {}
 public:
@@ -280,7 +403,7 @@ public:
 	uint32_t right;
 	std::vector<uint32_t> oprand;
 	std::vector<char> op; 
-	RCCallStatement* caller;
+	RCLibCallStatement* caller;
 };
 
 class RCGotoStatement : public RCBaseStatement {
@@ -292,7 +415,7 @@ public:
 	virtual int execute(void *cookie) override {}
 
 public:
-	uint32_t label;
+	std::string label;
 
 };
 
