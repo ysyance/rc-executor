@@ -131,6 +131,32 @@ public:
 		}
 		return std::stoi(str.substr(1));
 	}
+
+public:
+	static bool checkTypeMatch(uint8_t type1, uint8_t type2) {
+		if(type1 == TBOOL || type1 == TCHAR || type1 == TINT || type1 == TDOUBLE) {
+			if(type2 != TBOOL && type2 != TCHAR && type2 != TINT && type2 != TDOUBLE) {
+				return false;
+			} else {
+				return true;
+			}
+		} 
+
+		if(type1 == TJTPOSE) {
+			if(type2 == TJTPOSE) return true;
+			else return false;
+		}
+		if(type1 == TTRPOSE) {
+			if(type2 == TTRPOSE) return true;
+			else return false;
+		}
+
+		if(type1 == TSTRING) {
+			if(type2 == TSTRING) return true;
+			else return false;
+		} 
+		return false;
+	}
 	
 
 private:

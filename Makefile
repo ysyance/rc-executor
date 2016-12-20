@@ -1,9 +1,9 @@
 PREFIX_XENO :=  
 EXECUTABLE := exec
-LIBDIR := ./lib
+LIBDIR := ./Lib
 LIBS := antlr4-runtime
-INCLUDES := ./Antlr4 ./dataparser ./codeparser ./utility
-SRCDIR := ./dataparser ./codeparser ./utility
+INCLUDES := ./Antlr4 ./dataparser ./codeparser ./utility ./rcinterpreter
+SRCDIR := ./dataparser ./codeparser ./utility ./rcinterpreter
 
 CC = gcc
 CXX = g++

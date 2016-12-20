@@ -15,6 +15,7 @@ enum RC_EXCEPTION_TYPE{
 	EXECP_WRONG_VAR_TYPE,
 	EXECP_WRONG_PARAM,
 	EXECP_LACK_PARAM,
+	EXECP_VAR_NOT_DEFINED
 };
 
 static std::vector<std::string> rc_excep_info = {
@@ -25,7 +26,8 @@ static std::vector<std::string> rc_excep_info = {
 	"RC the instruction type is null",
 	"RC the type of var is not right in such situation",
 	"RC the param is not proper in this expression",
-	"RC the inst is lack of parameters"
+	"RC the inst is lack of parameters",
+	"RC the var is not defined in this program"
 };
 
 
@@ -200,6 +202,29 @@ public:
 		std::cerr << "[EXCEPTION" << " " << type << "] " 
 					<< "line " << line << ":" << col << " " 
 					<< "[INST:" << var << "] --> "
+					<< rc_excep_info[type] 
+					<< std::endl;
+	}
+
+private:
+	std::string var;
+
+};
+
+
+class rc_varnotdefined_exception : public rc_exception {
+public:
+	rc_varnotdefined_exception() : rc_exception(EXECP_VAR_NOT_DEFINED, 0, 0){
+	}
+
+	rc_varnotdefined_exception(int l, int c, std::string s) : rc_exception(EXECP_VAR_NOT_DEFINED, l, c), var(s){
+	}
+
+public:
+	virtual void what() {
+		std::cerr << "[EXCEPTION" << " " << type << "] " 
+					<< "line " << line << ":" << col << " " 
+					<< "[VAR:" << var << "] --> "
 					<< rc_excep_info[type] 
 					<< std::endl;
 	}

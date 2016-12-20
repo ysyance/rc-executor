@@ -77,12 +77,23 @@ public:
 	uint32_t midpointIndex;
 	uint32_t speed;
 	RESO_LEVEL Z;
+	std::string frame;
 
 public:
 	virtual void printInfo() {
 		std::cout << "[Line " << lineno << "]";
 		if(type == MOVJ) 
-			std::cout << " MOVJ" << " V" << speed << " Z" << Z << std::endl;
+			std::cout << " MOVJ " << endpointIndex << " V" << speed << " Z" << Z << std::endl;
+		if(type == MOVL) 
+			std::cout << " MOVL " << endpointIndex << " V" << speed << " Z" << Z << std::endl;
+		if(type == MOVC)
+			std::cout << " MOVC " << endpointIndex << " " << midpointIndex << " V" << speed << " Z" << Z << std::endl;
+		if(type == MOVS)
+			std::cout << " MOVS " << endpointIndex << " " << midpointIndex << " V" << speed << " Z" << Z << std::endl;
+		if(type == SHIFTON)
+			std::cout << " SHIFTON " << endpointIndex << " " << frame << std::endl;
+		if(type == SHIFTOFF)
+			std::cout << " SHIFTOFF" << std::endl;
 	}
 
 };
@@ -118,6 +129,14 @@ public:
 	uint32_t index1;
 	uint32_t index2;
 	std::pair<uint32_t, uint32_t> elem;
+
+public:
+	virtual void printInfo() {
+		std::cout << "[Line " << lineno << "]";
+		if(type == SET) {
+			std::cout << " SET " << index1 << " " << index2 << std::endl;
+		}
+	}
 
 };
 

@@ -75,92 +75,344 @@ public:
 
   
 
-  virtual antlrcpp::Any visitMovjExpr(RCcodeParser::MovjExprContext *ctx) override {
-  	LOGGER_INF("MovjExpr");
-    int line = ctx->MOVJ()->getSymbol()->getLine();
-    RCRobotStatement *tempStat = new RCRobotStatement(symbolTable);
+    virtual antlrcpp::Any visitMovjExpr(RCcodeParser::MovjExprContext *ctx) override {
+    	LOGGER_INF("MovjExpr");
+        int line = ctx->MOVJ()->getSymbol()->getLine();
+        RCRobotStatement *tempStat = new RCRobotStatement(symbolTable);
 
-    tempStat->lineno = line;
-    tempStat->type = RCRobotStatement::MOVJ;        // setting the type of robot inst
+        tempStat->lineno = line;
+        tempStat->type = RCRobotStatement::MOVJ;        // setting the type of robot inst
 
-    int paramSize = ctx->ID().size();
-    if(paramSize != 3) {
-        throw rc_lackparam_exception(line, 0, "MOVJ");
-    }
+        int paramSize = ctx->ID().size();
+        if(paramSize != 3) {
+            throw rc_lackparam_exception(line, 0, "MOVJ");
+        }
 
-    std::string strPoint = ctx->ID(0)->getText();
-    if(dataIndexMap.find(strPoint) != dataIndexMap.end()) {
-        uint8_t t = addrspace[dataIndexMap[strPoint]].type;
-        if(t == TJTPOSE || t == TTRPOSE) {
-            tempStat->endpointIndex = dataIndexMap[strPoint];
+        std::string strPoint = ctx->ID(0)->getText();
+        if(dataIndexMap.find(strPoint) != dataIndexMap.end()) {
+            uint8_t t = addrspace[dataIndexMap[strPoint]].type;
+            if(t == TJTPOSE || t == TTRPOSE) {
+                tempStat->endpointIndex = dataIndexMap[strPoint];
+            } else {
+                int col = ctx->ID(0)->getSymbol()->getCharPositionInLine();
+                throw rc_wrongvartype_exception(line, col, strPoint);
+            }
         } else {
             int col = ctx->ID(0)->getSymbol()->getCharPositionInLine();
-            throw rc_wrongvartype_exception(line, col, strPoint);
+            throw rc_pointnotdefined_exception(line, col, strPoint);
         }
-    } else {
-        int col = ctx->ID(0)->getSymbol()->getCharPositionInLine();
-        throw rc_pointnotdefined_exception(line, col, strPoint);
+
+        std::string strSpeed = ctx->ID(1)->getText();
+        int speed = Utility::parseSpeed(strSpeed);
+        if(speed != -1) {
+            tempStat->speed = speed;
+        } else {
+            int col = ctx->ID(1)->getSymbol()->getCharPositionInLine();
+            throw rc_wrongparam_exception(line, col, strSpeed);
+        }
+
+        std::string strZX = ctx->ID(2)->getText();
+        if(strZX != "Z0" && strZX != "Z1" && strZX != "Z2" && strZX != "Z3" && strZX != "Z4"
+             && strZX != "Z5" && strZX != "Z6" && strZX != "Z7" && strZX != "Z8") 
+        {
+            int col = ctx->ID(2)->getSymbol()->getCharPositionInLine();
+            throw rc_wrongparam_exception(line, col, strZX);
+        } else {
+            if(strZX == "Z0") tempStat->Z = RCRobotStatement::Z0;
+            if(strZX == "Z1") tempStat->Z = RCRobotStatement::Z1;
+            if(strZX == "Z2") tempStat->Z = RCRobotStatement::Z2;
+            if(strZX == "Z3") tempStat->Z = RCRobotStatement::Z3;
+            if(strZX == "Z4") tempStat->Z = RCRobotStatement::Z4;
+            if(strZX == "Z5") tempStat->Z = RCRobotStatement::Z5;
+            if(strZX == "Z6") tempStat->Z = RCRobotStatement::Z6;
+            if(strZX == "Z7") tempStat->Z = RCRobotStatement::Z7;
+            if(strZX == "Z8") tempStat->Z = RCRobotStatement::Z8;
+        }
+
+        return dynamic_cast<RCBaseStatement*>(tempStat);
     }
 
-    std::string strSpeed = ctx->ID(1)->getText();
-    int speed = Utility::parseSpeed(strSpeed);
-    if(speed != -1) {
-        tempStat->speed = speed;
-    } else {
-        int col = ctx->ID(1)->getSymbol()->getCharPositionInLine();
-        throw rc_wrongparam_exception(line, col, strSpeed);
+    virtual antlrcpp::Any visitMovlExpr(RCcodeParser::MovlExprContext *ctx) override {
+    	LOGGER_INF("MovlExpr");
+        int line = ctx->MOVL()->getSymbol()->getLine();
+        RCRobotStatement *tempStat = new RCRobotStatement(symbolTable);
+
+        tempStat->lineno = line;
+        tempStat->type = RCRobotStatement::MOVL;        // setting the type of robot inst
+
+        int paramSize = ctx->ID().size();
+        if(paramSize != 3) {
+            throw rc_lackparam_exception(line, 0, "MOVL");
+        }
+
+        std::string strPoint = ctx->ID(0)->getText();
+        if(dataIndexMap.find(strPoint) != dataIndexMap.end()) {
+            uint8_t t = addrspace[dataIndexMap[strPoint]].type;
+            if(t == TJTPOSE || t == TTRPOSE) {
+                tempStat->endpointIndex = dataIndexMap[strPoint];
+            } else {
+                int col = ctx->ID(0)->getSymbol()->getCharPositionInLine();
+                throw rc_wrongvartype_exception(line, col, strPoint);
+            }
+        } else {
+            int col = ctx->ID(0)->getSymbol()->getCharPositionInLine();
+            throw rc_pointnotdefined_exception(line, col, strPoint);
+        }
+
+        std::string strSpeed = ctx->ID(1)->getText();
+        int speed = Utility::parseSpeed(strSpeed);
+        if(speed != -1) {
+            tempStat->speed = speed;
+        } else {
+            int col = ctx->ID(1)->getSymbol()->getCharPositionInLine();
+            throw rc_wrongparam_exception(line, col, strSpeed);
+        }
+
+        std::string strZX = ctx->ID(2)->getText();
+        if(strZX != "Z0" && strZX != "Z1" && strZX != "Z2" && strZX != "Z3" && strZX != "Z4"
+             && strZX != "Z5" && strZX != "Z6" && strZX != "Z7" && strZX != "Z8") 
+        {
+            int col = ctx->ID(2)->getSymbol()->getCharPositionInLine();
+            throw rc_wrongparam_exception(line, col, strZX);
+        } else {
+            if(strZX == "Z0") tempStat->Z = RCRobotStatement::Z0;
+            if(strZX == "Z1") tempStat->Z = RCRobotStatement::Z1;
+            if(strZX == "Z2") tempStat->Z = RCRobotStatement::Z2;
+            if(strZX == "Z3") tempStat->Z = RCRobotStatement::Z3;
+            if(strZX == "Z4") tempStat->Z = RCRobotStatement::Z4;
+            if(strZX == "Z5") tempStat->Z = RCRobotStatement::Z5;
+            if(strZX == "Z6") tempStat->Z = RCRobotStatement::Z6;
+            if(strZX == "Z7") tempStat->Z = RCRobotStatement::Z7;
+            if(strZX == "Z8") tempStat->Z = RCRobotStatement::Z8;
+        }
+
+        return dynamic_cast<RCBaseStatement*>(tempStat);
     }
 
-    std::string strZX = ctx->ID(2)->getText();
-    if(strZX != "Z0" && strZX != "Z1" && strZX != "Z2" && strZX != "Z3" && strZX != "Z4"
-         && strZX != "Z5" && strZX != "Z6" && strZX != "Z7" && strZX != "Z8") 
-    {
-        int col = ctx->ID(2)->getSymbol()->getCharPositionInLine();
-        throw rc_wrongparam_exception(line, col, strZX);
-    } else {
-        if(strZX == "Z0") tempStat->Z = RCRobotStatement::Z0;
-        if(strZX == "Z1") tempStat->Z = RCRobotStatement::Z1;
-        if(strZX == "Z2") tempStat->Z = RCRobotStatement::Z2;
-        if(strZX == "Z3") tempStat->Z = RCRobotStatement::Z3;
-        if(strZX == "Z4") tempStat->Z = RCRobotStatement::Z4;
-        if(strZX == "Z5") tempStat->Z = RCRobotStatement::Z5;
-        if(strZX == "Z6") tempStat->Z = RCRobotStatement::Z6;
-        if(strZX == "Z7") tempStat->Z = RCRobotStatement::Z7;
-        if(strZX == "Z8") tempStat->Z = RCRobotStatement::Z8;
+    virtual antlrcpp::Any visitMovcExpr(RCcodeParser::MovcExprContext *ctx) override {
+    	LOGGER_INF("MovcExpr");
+        int line = ctx->MOVC()->getSymbol()->getLine();
+        RCRobotStatement *tempStat = new RCRobotStatement(symbolTable);
+
+        tempStat->lineno = line;
+        tempStat->type = RCRobotStatement::MOVC;        // setting the type of robot inst
+
+        int paramSize = ctx->ID().size();
+        if(paramSize != 4) {
+            throw rc_lackparam_exception(line, 0, "MOVC");
+        }
+
+        std::string strPoint = ctx->ID(0)->getText();
+        if(dataIndexMap.find(strPoint) != dataIndexMap.end()) {
+            uint8_t t = addrspace[dataIndexMap[strPoint]].type;
+            if(t == TJTPOSE || t == TTRPOSE) {
+                tempStat->endpointIndex = dataIndexMap[strPoint];
+            } else {
+                int col = ctx->ID(0)->getSymbol()->getCharPositionInLine();
+                throw rc_wrongvartype_exception(line, col, strPoint);
+            }
+        } else {
+            int col = ctx->ID(0)->getSymbol()->getCharPositionInLine();
+            throw rc_pointnotdefined_exception(line, col, strPoint);
+        }
+
+        strPoint = ctx->ID(1)->getText();
+        if(dataIndexMap.find(strPoint) != dataIndexMap.end()) {
+            uint8_t t = addrspace[dataIndexMap[strPoint]].type;
+            if(t == TJTPOSE || t == TTRPOSE) {
+                tempStat->midpointIndex = dataIndexMap[strPoint];
+            } else {
+                int col = ctx->ID(1)->getSymbol()->getCharPositionInLine();
+                throw rc_wrongvartype_exception(line, col, strPoint);
+            }
+        } else {
+            int col = ctx->ID(1)->getSymbol()->getCharPositionInLine();
+            throw rc_pointnotdefined_exception(line, col, strPoint);
+        }
+
+        std::string strSpeed = ctx->ID(2)->getText();
+        int speed = Utility::parseSpeed(strSpeed);
+        if(speed != -1) {
+            tempStat->speed = speed;
+        } else {
+            int col = ctx->ID(2)->getSymbol()->getCharPositionInLine();
+            throw rc_wrongparam_exception(line, col, strSpeed);
+        }
+
+        std::string strZX = ctx->ID(3)->getText();
+        if(strZX != "Z0" && strZX != "Z1" && strZX != "Z2" && strZX != "Z3" && strZX != "Z4"
+             && strZX != "Z5" && strZX != "Z6" && strZX != "Z7" && strZX != "Z8") 
+        {
+            int col = ctx->ID(3)->getSymbol()->getCharPositionInLine();
+            throw rc_wrongparam_exception(line, col, strZX);
+        } else {
+            if(strZX == "Z0") tempStat->Z = RCRobotStatement::Z0;
+            if(strZX == "Z1") tempStat->Z = RCRobotStatement::Z1;
+            if(strZX == "Z2") tempStat->Z = RCRobotStatement::Z2;
+            if(strZX == "Z3") tempStat->Z = RCRobotStatement::Z3;
+            if(strZX == "Z4") tempStat->Z = RCRobotStatement::Z4;
+            if(strZX == "Z5") tempStat->Z = RCRobotStatement::Z5;
+            if(strZX == "Z6") tempStat->Z = RCRobotStatement::Z6;
+            if(strZX == "Z7") tempStat->Z = RCRobotStatement::Z7;
+            if(strZX == "Z8") tempStat->Z = RCRobotStatement::Z8;
+        }
+
+        return dynamic_cast<RCBaseStatement*>(tempStat);
     }
 
-    return dynamic_cast<RCBaseStatement*>(tempStat);
-  }
+    virtual antlrcpp::Any visitMovsExpr(RCcodeParser::MovsExprContext *ctx) override {
+    	LOGGER_INF("MovsExpr");
+        int line = ctx->MOVS()->getSymbol()->getLine();
+        RCRobotStatement *tempStat = new RCRobotStatement(symbolTable);
 
-  virtual antlrcpp::Any visitMovlExpr(RCcodeParser::MovlExprContext *ctx) override {
-  	LOGGER_INF("MovlExpr");
-    return visitChildren(ctx);
-  }
+        tempStat->lineno = line;
+        tempStat->type = RCRobotStatement::MOVS;        // setting the type of robot inst
 
-  virtual antlrcpp::Any visitMovcExpr(RCcodeParser::MovcExprContext *ctx) override {
-  	LOGGER_INF("MovcExpr");
-    return visitChildren(ctx);
-  }
+        int paramSize = ctx->ID().size();
+        if(paramSize != 4) {
+            throw rc_lackparam_exception(line, 0, "MOVS");
+        }
 
-  virtual antlrcpp::Any visitMovsExpr(RCcodeParser::MovsExprContext *ctx) override {
-  	LOGGER_INF("MovsExpr");
-    return visitChildren(ctx);
-  }
+        std::string strPoint = ctx->ID(0)->getText();
+        if(dataIndexMap.find(strPoint) != dataIndexMap.end()) {
+            uint8_t t = addrspace[dataIndexMap[strPoint]].type;
+            if(t == TJTPOSE || t == TTRPOSE) {
+                tempStat->endpointIndex = dataIndexMap[strPoint];
+            } else {
+                int col = ctx->ID(0)->getSymbol()->getCharPositionInLine();
+                throw rc_wrongvartype_exception(line, col, strPoint);
+            }
+        } else {
+            int col = ctx->ID(0)->getSymbol()->getCharPositionInLine();
+            throw rc_pointnotdefined_exception(line, col, strPoint);
+        }
 
-  virtual antlrcpp::Any visitShiftonExpr(RCcodeParser::ShiftonExprContext *ctx) override {
-  	LOGGER_INF("ShiftonExpr");
-    return visitChildren(ctx);
-  }
+        strPoint = ctx->ID(1)->getText();
+        if(dataIndexMap.find(strPoint) != dataIndexMap.end()) {
+            uint8_t t = addrspace[dataIndexMap[strPoint]].type;
+            if(t == TJTPOSE || t == TTRPOSE) {
+                tempStat->midpointIndex = dataIndexMap[strPoint];
+            } else {
+                int col = ctx->ID(1)->getSymbol()->getCharPositionInLine();
+                throw rc_wrongvartype_exception(line, col, strPoint);
+            }
+        } else {
+            int col = ctx->ID(1)->getSymbol()->getCharPositionInLine();
+            throw rc_pointnotdefined_exception(line, col, strPoint);
+        }
 
-  virtual antlrcpp::Any visitShiftoffExpr(RCcodeParser::ShiftoffExprContext *ctx) override {
-  	LOGGER_INF("ShiftoffExpr");
-    return visitChildren(ctx);
-  }
+        std::string strSpeed = ctx->ID(2)->getText();
+        int speed = Utility::parseSpeed(strSpeed);
+        if(speed != -1) {
+            tempStat->speed = speed;
+        } else {
+            int col = ctx->ID(2)->getSymbol()->getCharPositionInLine();
+            throw rc_wrongparam_exception(line, col, strSpeed);
+        }
 
-  virtual antlrcpp::Any visitSetExpr(RCcodeParser::SetExprContext *ctx) override {
-  	LOGGER_INF("SetExpr");
-    return visitChildren(ctx);
-  }
+        std::string strZX = ctx->ID(3)->getText();
+        if(strZX != "Z0" && strZX != "Z1" && strZX != "Z2" && strZX != "Z3" && strZX != "Z4"
+             && strZX != "Z5" && strZX != "Z6" && strZX != "Z7" && strZX != "Z8") 
+        {
+            int col = ctx->ID(3)->getSymbol()->getCharPositionInLine();
+            throw rc_wrongparam_exception(line, col, strZX);
+        } else {
+            if(strZX == "Z0") tempStat->Z = RCRobotStatement::Z0;
+            if(strZX == "Z1") tempStat->Z = RCRobotStatement::Z1;
+            if(strZX == "Z2") tempStat->Z = RCRobotStatement::Z2;
+            if(strZX == "Z3") tempStat->Z = RCRobotStatement::Z3;
+            if(strZX == "Z4") tempStat->Z = RCRobotStatement::Z4;
+            if(strZX == "Z5") tempStat->Z = RCRobotStatement::Z5;
+            if(strZX == "Z6") tempStat->Z = RCRobotStatement::Z6;
+            if(strZX == "Z7") tempStat->Z = RCRobotStatement::Z7;
+            if(strZX == "Z8") tempStat->Z = RCRobotStatement::Z8;
+        }
+
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
+
+    virtual antlrcpp::Any visitShiftonExpr(RCcodeParser::ShiftonExprContext *ctx) override {
+    	LOGGER_INF("ShiftonExpr");
+        int line = ctx->SHIFTON()->getSymbol()->getLine();
+        RCRobotStatement *tempStat = new RCRobotStatement(symbolTable);
+
+        tempStat->lineno = line;
+        tempStat->type = RCRobotStatement::SHIFTON;        // setting the type of robot inst
+
+        int paramSize = ctx->ID().size();
+        if(paramSize != 2) {
+            throw rc_lackparam_exception(line, 0, "SHIFTON");
+        }
+
+        std::string strPoint = ctx->ID(0)->getText();
+        if(dataIndexMap.find(strPoint) != dataIndexMap.end()) {
+            uint8_t t = addrspace[dataIndexMap[strPoint]].type;
+            if(t == TJTPOSE || t == TTRPOSE) {
+                tempStat->endpointIndex = dataIndexMap[strPoint];
+            } else {
+                int col = ctx->ID(0)->getSymbol()->getCharPositionInLine();
+                throw rc_wrongvartype_exception(line, col, strPoint);
+            }
+        } else {
+            int col = ctx->ID(0)->getSymbol()->getCharPositionInLine();
+            throw rc_pointnotdefined_exception(line, col, strPoint);
+        }
+
+        tempStat->frame = ctx->ID(1)->getText();
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
+
+    virtual antlrcpp::Any visitShiftoffExpr(RCcodeParser::ShiftoffExprContext *ctx) override {
+    	LOGGER_INF("ShiftoffExpr");
+        int line = ctx->SHIFTOFF()->getSymbol()->getLine();
+        RCRobotStatement *tempStat = new RCRobotStatement(symbolTable);
+
+        tempStat->lineno = line;
+        tempStat->type = RCRobotStatement::SHIFTOFF;        // setting the type of robot inst
+
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
+
+    virtual antlrcpp::Any visitSetExpr(RCcodeParser::SetExprContext *ctx) override {
+    	LOGGER_INF("SetExpr");
+        int line = ctx->SET()->getSymbol()->getLine();
+        RCDataStatement *tempStat = new RCDataStatement(symbolTable);
+
+        tempStat->lineno = line;
+        tempStat->type = RCDataStatement::SET;
+
+        int paramSize = ctx->ID().size();
+        if(paramSize != 2) {
+            throw rc_lackparam_exception(line, 0, "SET");
+        }
+
+        std::string strIndex1 = ctx->ID(0)->getText();
+        uint8_t index1Type;
+        if(dataIndexMap.find(strIndex1) != dataIndexMap.end()) {
+            index1Type = addrspace[dataIndexMap[strIndex1]].type;
+            tempStat->index1 = dataIndexMap[strIndex1];
+        } else {
+            int col = ctx->ID(0)->getSymbol()->getCharPositionInLine();
+            throw rc_varnotdefined_exception(line, col, strIndex1);
+        }
+
+        std::string strIndex2 = ctx->ID(1)->getText();
+        uint8_t index2Type;
+        if(dataIndexMap.find(strIndex2) != dataIndexMap.end()) {
+            index2Type = addrspace[dataIndexMap[strIndex2]].type;
+            tempStat->index2 = dataIndexMap[strIndex2];
+        } else {
+            int col = ctx->ID(1)->getSymbol()->getCharPositionInLine();
+            throw rc_varnotdefined_exception(line, col, strIndex2);
+        }
+
+        if(Utility::checkTypeMatch(index1Type, index2Type) == false) {
+            int col = ctx->ID(0)->getSymbol()->getCharPositionInLine();
+            throw rc_wrongvartype_exception(line, col, strIndex1);
+        }
+
+        return dynamic_cast<RCBaseStatement*>(tempStat);
+    }
 
   virtual antlrcpp::Any visitSeteExpr(RCcodeParser::SeteExprContext *ctx) override {
   	LOGGER_INF("SeteExpr");
