@@ -37,6 +37,17 @@
     #define LOGGER_DBG(msg, ...)
 #endif
 
+#if LEVEL_DBG <= LOGGER_LEVEL
+    #define LOGGER_TRACE(line, msg)                                                \
+    do {                                                                              \
+        fprintf(stderr, "TRACE: %d --> ", line ); \
+        fprintf(stderr, msg);                                            \
+        fprintf(stderr, "\n");                                                        \
+    } while(0)
+#else
+    #define LOGGER_TRACE(line, msg)
+#endif
+
 /*-----------------------------------------------------------------------------
  * Tips Information Macro (for released version)
  *---------------------------------------------------------------------------*/

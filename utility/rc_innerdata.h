@@ -2,6 +2,8 @@
 
 
 #include <vector>
+#include "rc_exception.h"
+
 
 
 /* Internal Value Type Tag */
@@ -26,64 +28,6 @@ typedef uint32_t IJtpose;
 typedef uint32_t ITrpose;
 typedef uint32_t ITooldata;
 typedef uint32_t ICoordata;
-
-
-struct RC_IValue {
-	uint8_t type;
-    union {
-    	IBool value_b;
- 		IChar value_c;
-        IInt value_i;
-        IDouble value_d;
-        IString value_s;
-        IJtpose value_ap; 
-        ITrpose value_cp;
-        ITooldata value_tool;
-        ICoordata value_coord;
-    } v;
-public:
-	RC_IValue(){}
-	RC_IValue(uint8_t t, uint8_t val) : type(t) { v.value_b = val; } 
-	RC_IValue(uint8_t t, int32_t val) : type(t) { v.value_i = val; } 
-	RC_IValue(uint8_t t, uint32_t val) : type(t) { v.value_s = val; } 
-	RC_IValue(uint8_t t, double val) : type(t) { v.value_d = val; } 
-
-public:
-	friend std::ostream& operator<<(std::ostream& os, const RC_IValue &iv) {
-		switch(iv.type) {
-			case TBOOL:
-				os << "TBOOL" << " : " << (int)iv.v.value_b ;
-				break;
-			case TCHAR:
-				os << "TCHAR" << " : " << iv.v.value_c ;
-				break;
-			case TINT:
-				os << "TINT" << " : " << iv.v.value_i ;
-				break;
-			case TDOUBLE:
-				os << "TDOUBLE" << " : " << iv.v.value_d ;
-				break;
-			case TSTRING:
-				os << "TSTRING" << " : " << iv.v.value_s ;
-				break;
-			case TJTPOSE:
-				os << "TJTPOSE" << " : " << iv.v.value_ap ;
-				break;
-			case TTRPOSE:
-				os << "TTRPOSE" << " : " << iv.v.value_cp ;
-				break;
-			case TTOOLDATA:
-				os << "TTOOLDATA" << " : " << iv.v.value_tool ;
-				break;
-			case TCOORDATA:
-				os << "TCOORDATA" << " : " << iv.v.value_coord ;
-				break;
-			default:
-				os << "null type" ;
-			  	break;
-		}
-	}
-};
 
 
 /*-----------------------------------------------------------------------------
@@ -125,8 +69,8 @@ public:
 #define vtooldata(value) 	((value).v.value_tool)
 #define vcoordata(value)	((value).v.value_coord)
 
-#define vnumber(v, t)  ((t)((t==TCHAR)*vchar(v) + (t==TINT)*vint(v) + (t==TDOUBLE)*vdouble(v))) /* CAN'T be left value */
-
+// #define vnumber(t, v)  ((t)((t==TCHAR)*vchar(v) + (t==TBOOL)*vbool(v) + (t==TINT)*vint(v) + (t==TDOUBLE)*vdouble(v))) /* CAN'T be left value */
+#define vnumber(t, v)  ((t)((t==TINT)*vint(v)))
 /* value setter */
 #define setvbool(value, data_b)	  		{(value).v.value_b = (data_b);}
 #define setvchar(value, data_c)			{(value).v.value_c = (data_c);}
@@ -137,6 +81,106 @@ public:
 #define setvtrpose(value, data_cp)		{(value).v.value_cp = (data_cp);}
 #define setvtooldata(value, data_tool)	{(value).v.value_tool = (data_tool);}
 #define setvcoordata(value, data_coord)	{(value).v.value_coord = (data_coord);}
+
+
+
+struct RC_IValue {
+	uint8_t type;
+    union {
+    	IBool value_b;
+ 		IChar value_c;
+        IInt value_i;
+        IDouble value_d;
+        IString value_s;
+        IJtpose value_ap; 
+        ITrpose value_cp;
+        ITooldata value_tool;
+        ICoordata value_coord;
+    } v;
+public:
+	RC_IValue(){}
+	RC_IValue(uint8_t t, uint8_t val) : type(t) { v.value_b = val; } 
+	RC_IValue(uint8_t t, int32_t val) : type(t) { v.value_i = val; } 
+	RC_IValue(uint8_t t, uint32_t val) : type(t) { v.value_s = val; } 
+	RC_IValue(uint8_t t, double val) : type(t) { v.value_d = val; } 
+
+public:
+	RC_IValue &operator=(const RC_IValue& rhs) {
+		switch(type) {
+			case TBOOL: {
+				this->v.value_b = (rhs.type==TBOOL) * rhs.v.value_b + (rhs.type == TCHAR) * rhs.v.value_c
+								+ (rhs.type==TINT) * rhs.v.value_i + (rhs.type==TDOUBLE) * rhs.v.value_d;
+	
+				break;
+			}
+			case TCHAR: {
+				this->v.value_c = (rhs.type==TBOOL) * rhs.v.value_b + (rhs.type == TCHAR) * rhs.v.value_c
+								+ (rhs.type==TINT) * rhs.v.value_i + (rhs.type==TDOUBLE) * rhs.v.value_d;
+	
+				break;
+			}
+			case TINT: {
+				this->v.value_i = (rhs.type==TBOOL) * rhs.v.value_b + (rhs.type == TCHAR) * rhs.v.value_c
+								+ (rhs.type==TINT) * rhs.v.value_i + (rhs.type==TDOUBLE) * rhs.v.value_d;
+				break;
+			}
+			case TDOUBLE: {
+				this->v.value_d = (rhs.type==TBOOL) * rhs.v.value_b + (rhs.type == TCHAR) * rhs.v.value_c
+								+ (rhs.type==TINT) * rhs.v.value_i + (rhs.type==TDOUBLE) * rhs.v.value_d;
+	
+				break;
+			}
+			case TSTRING: {
+				this->v.value_s = rhs.v.value_s;
+				break;
+			}
+			default : {
+				throw rc_exception();
+				break;
+			}
+		}
+	}
+
+
+public:
+	friend std::ostream& operator<<(std::ostream& os, const RC_IValue &iv) {
+		switch(iv.type) {
+			case TBOOL:
+				os << "TBOOL" << " : " << (int)iv.v.value_b ;
+				break;
+			case TCHAR:
+				os << "TCHAR" << " : " << iv.v.value_c ;
+				break;
+			case TINT:
+				os << "TINT" << " : " << iv.v.value_i ;
+				break;
+			case TDOUBLE:
+				os << "TDOUBLE" << " : " << iv.v.value_d ;
+				break;
+			case TSTRING:
+				os << "TSTRING" << " : " << iv.v.value_s ;
+				break;
+			case TJTPOSE:
+				os << "TJTPOSE" << " : " << iv.v.value_ap ;
+				break;
+			case TTRPOSE:
+				os << "TTRPOSE" << " : " << iv.v.value_cp ;
+				break;
+			case TTOOLDATA:
+				os << "TTOOLDATA" << " : " << iv.v.value_tool ;
+				break;
+			case TCOORDATA:
+				os << "TCOORDATA" << " : " << iv.v.value_coord ;
+				break;
+			default:
+				os << "null type" ;
+			  	break;
+		}
+	}
+};
+
+
+
 
 
 

@@ -19,7 +19,14 @@ public:
 	{}
 
 	virtual int execute(void *cookie) = 0;
+
+	virtual bool selfCheck() {
+		std::cout << "RCBaseStatement selfCheck()" << std::endl;
+		return true;
+	}
+
 	virtual void printInfo(std::string  empty="") {
+		std::cout << empty << "[Line " << lineno << "] ";
 		std::cout << empty << "RCBaseStatement" << std::endl;
 	}
 
@@ -69,18 +76,30 @@ public:
 public:
 	virtual int execute(void *cookie) override {
 		switch(type) {
-			case RET:
-			break;
-			case NOP:
-			break;
-			case PAUSE:
-			break;
-			case HALT:
-			break;
-			case BREAK:
-			break;
-			case LABEL:
-			break;
+			case RET: {
+				std::cout << "RET" << std::endl;
+				break;
+			}
+			case NOP: {
+				std::cout << "NOP" << std::endl;
+				break;
+			}
+			case PAUSE: {
+				std::cout << "PAUSE" << std::endl;
+				break;
+			}
+			case HALT: {
+				std::cout << "HALT" << std::endl;
+				break;
+			}
+			case BREAK: {
+				std::cout << "BREAK" << std::endl;
+				break;
+			}
+			case LABEL: {
+				std::cout << "LABEL" << std::endl;
+				break;
+			}
 			default:
 			break;
 		}
@@ -122,18 +141,31 @@ public:
 public:
 	virtual int execute(void *cookie) override {
 		switch(type) {
-			case MOVJ:
-			break;
-			case MOVL:
-			break;
-			case MOVC:
-			break;
-			case MOVS:
-			break;
-			case SHIFTON:
-			break;
-			case SHIFTOFF:
-			break;
+			case MOVJ: {
+				LOGGER_TRACE(lineno, "MOVJ");
+				break;
+			}
+			case MOVL: {
+				LOGGER_TRACE(lineno, "MOVL");
+				break;
+			}
+			case MOVC: {
+				LOGGER_TRACE(lineno, "MOVC");
+				break;
+			}
+			case MOVS: {
+				LOGGER_TRACE(lineno, "MOVS");
+				break;
+			}
+			case SHIFTON: {
+				LOGGER_TRACE(lineno, "SHIFTON");
+				break;
+			}
+			case SHIFTOFF: {
+				LOGGER_TRACE(lineno, "SHIFTOFF");
+				break;
+			}
+			
 			default:
 			break;
 		}
@@ -182,12 +214,19 @@ public:
 public:
 	virtual int execute(void *cookie) override {
 		switch(type) {
-			case SET:
-			break;
-			case SETE:
-			break;
-			case GETE:
-			break;
+			case SET: {
+				LOGGER_TRACE(lineno, "SET");
+				break;
+			}
+			case SETE: {
+				LOGGER_TRACE(lineno, "SETE");
+				break;
+			}
+			case GETE: {
+				LOGGER_TRACE(lineno, "GETE");
+				break;
+			}
+			
 			default:
 			break;
 		}
@@ -232,14 +271,26 @@ public:
 public:
 	virtual int execute(void *cookie) override {
 		switch(type) {
-			case WAIT:
-			break;
-			case DELAY:
-			break;
-			case SETOUT:
-			break;
-			case DIN:
-			break;
+			case WAIT: {
+				LOGGER_TRACE(lineno, "WAIT");
+				break;
+			}
+			
+			case DELAY: {
+				LOGGER_TRACE(lineno, "DELAY");
+				break;
+			}
+			
+			case SETOUT: {
+				LOGGER_TRACE(lineno, "SETOUT");
+				break;
+			}
+			
+			case DIN: {
+				LOGGER_TRACE(lineno, "DIV");
+				break;
+			}
+			
 			default:
 			break;
 		}
@@ -285,34 +336,62 @@ public:
 public:
 	virtual int execute(void *cookie) override {
 		switch(type) {
-			case INCR:
-			break;
-			case DECR:
-			break;
-			case ADD:
-			break;
-			case SUB:
-			break;
-			case MUL:
-			break;
-			case DIV:
-			break;
-			case SIN:
-			break;
-			case COS:
-			break;
-			case ATAN:
-			break;
-			case SQRT:
-			break;
-			case AND:
-			break;
-			case OR:
-			break;
-			case NOT:
-			break;
-			case XOR:
-			break;
+			case INCR: {
+				LOGGER_TRACE(lineno, "INCR");
+				break;
+			}
+			case DECR: {
+				LOGGER_TRACE(lineno, "DECR");
+				break;
+			}
+			case ADD: {
+				LOGGER_TRACE(lineno, "ADD");
+				break;
+			}
+			case SUB: {
+				LOGGER_TRACE(lineno, "SUB");
+				break;
+			}
+			case MUL: {
+				LOGGER_TRACE(lineno, "MUL");
+				break;
+			}
+			case DIV: {
+				LOGGER_TRACE(lineno, "DIV");
+				break;
+			}
+			case SIN: {
+				LOGGER_TRACE(lineno, "SIN");
+				break;
+			}
+			case COS: {
+				LOGGER_TRACE(lineno, "COS");
+				break;
+			}
+			case ATAN: {
+				LOGGER_TRACE(lineno, "ATAN");
+				break;
+			}
+			case SQRT: {
+				LOGGER_TRACE(lineno, "SQRT");
+				break;
+			}
+			case AND: {
+				LOGGER_TRACE(lineno, "AND");
+				break;
+			}
+			case OR: {
+				LOGGER_TRACE(lineno, "OR");
+				break;
+			}
+			case NOT: {
+				LOGGER_TRACE(lineno, "NOT");
+				break;
+			}
+			case XOR: {
+				LOGGER_TRACE(lineno, "XOR");
+				break;
+			}
 			default:
 			break;
 		}
@@ -364,7 +443,7 @@ public:
 											 {}
 public:
 	virtual int execute(void *cookie) override {
-
+		LOGGER_TRACE(lineno, "LIBCALL");
 	}	
 public:
 	uint32_t index;						// the index of library function
@@ -395,17 +474,31 @@ public:
 											{}
 public:
 	virtual int execute(void *cookie) override {
+		LOGGER_TRACE(lineno, "ASSIGNMENT");
 		switch(type) {
-			case GENERIC:
-			break;
-			case CALL:
-			break;
-			case ARITHMETIC:
-			break;
+			case GENERIC: {
+				addrspace[left] = addrspace[right];
+				break;
+			}
+			
+			case CALL: {
+				caller->execute(cookie);
+				addrspace[left] = addrspace[0];
+				break;
+			}
+			case ARITHMETIC: {
+				break;
+			}
+			
 			default:
 			break;
 		}
 	}	
+
+	virtual bool selfCheck() {
+		
+		return true;
+	}
 
 public:
 	INST_TYPE type;
@@ -442,7 +535,9 @@ public:
 							
 											{}
 public:
-	virtual int execute(void *cookie) override {}
+	virtual int execute(void *cookie) override {
+		LOGGER_TRACE(lineno, "GOTO");
+	}
 
 public:
 	std::string label;
@@ -471,6 +566,7 @@ public:
 											{}
 public:
 	virtual int execute(void *cookie) override {
+		LOGGER_TRACE(lineno, "IFStatement");
 		switch(type) {
 			case GENERIC:
 			break;
@@ -528,7 +624,9 @@ public:
 											
 											{}
 public:
-	virtual int execute(void *cookie) override {}
+	virtual int execute(void *cookie) override {
+		LOGGER_TRACE(lineno, "ELSEStatement");
+	}
 
 public:
 	INST_TYPE type;
@@ -563,7 +661,9 @@ public:
 											step(0)
 											{}
 public:
-	virtual int execute(void *cookie) override {}
+	virtual int execute(void *cookie) override {
+		LOGGER_TRACE(lineno, "FORStatement");
+	}
 
 public:
 	uint32_t varIndex;				// the index of var in for statement
@@ -597,6 +697,7 @@ public:
 											{}
 public:
 	virtual int execute(void *cookie) override {
+		LOGGER_TRACE(lineno, "WHILEStatement");
 		switch(type) {
 			case GENERIC:
 			break;
@@ -634,9 +735,6 @@ public:
 
 
 };
-
-
-
 
 
 typedef std::vector<RCBaseStatement*> CodeModel;   // rc code in memory 

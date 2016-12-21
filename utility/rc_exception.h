@@ -16,7 +16,9 @@ enum RC_EXCEPTION_TYPE{
 	EXECP_WRONG_PARAM,
 	EXECP_LACK_PARAM,
 	EXECP_VAR_NOT_DEFINED,
-	EXECP_LIB_FUNC_NOT_EXIST
+	EXECP_LIB_FUNC_NOT_EXIST,
+	EXECP_PROJ_NOT_FOUND,
+	EXECP_PROGRAM_NOT_FOUND
 };
 
 static std::vector<std::string> rc_excep_info = {
@@ -29,13 +31,15 @@ static std::vector<std::string> rc_excep_info = {
 	"RC the param is not proper in this expression",
 	"RC the inst is lack of parameters",
 	"RC the var is not defined in this program",
-	"RC the lib function is not existing"
+	"RC the lib function is not existing",
+	"RC the project is not found",
+	"RC the program is not found"
 };
 
 
 class rc_exception : public std::exception {
 public:
-	rc_exception() {
+	rc_exception():line(0), col(0) {
 		this->type = EXCEP_RUNTIME;
 	}
 	rc_exception(int t): type(t) {}
@@ -258,4 +262,48 @@ public:
 private:
 	std::string func;
 
+};
+
+
+class rc_projectnotfind_exception : public rc_exception {
+public:
+	rc_projectnotfind_exception(std::string n) : rc_exception(EXECP_PROJ_NOT_FOUND),
+												 name(n)
+
+	{
+	}
+
+public:
+	virtual void what() {
+		std::cerr << "[EXCEPTION" << " " << type << "] " 
+					<< "line " << line << ":" << col << " " 
+					<< "[PROJ:" << name << "] --> "
+					<< rc_excep_info[type] 
+					<< std::endl;
+	}
+
+private:
+	std::string name;
+};
+
+
+class rc_programnotfound_exception : public rc_exception {
+public:
+	rc_programnotfound_exception(std::string n) : rc_exception(EXECP_PROGRAM_NOT_FOUND),
+												 name(n)
+
+	{
+	}
+
+public:
+	virtual void what() {
+		std::cerr << "[EXCEPTION" << " " << type << "] " 
+					<< "line " << line << ":" << col << " " 
+					<< "[PROGRAM:" << name << "] --> "
+					<< rc_excep_info[type] 
+					<< std::endl;
+	}
+
+private:
+	std::string name;
 };
