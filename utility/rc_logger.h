@@ -8,13 +8,14 @@
 
 
 #define LEVEL_OFF 0
-#define LEVEL_ERR 1
-#define LEVEL_WRN 2
-#define LEVEL_INF 3
-#define LEVEL_DBG 4
-#define LEVEL_ALL 5
+#define LEVEL_TRA 1
+#define LEVEL_ERR 2
+#define LEVEL_WRN 3
+#define LEVEL_INF 4
+#define LEVEL_DBG 5
+#define LEVEL_ALL 6
 
-#define LOGGER_LEVEL LEVEL_ALL
+#define LOGGER_LEVEL LEVEL_TRA
 
 #define EOL {fprintf(stderr, "\n");}
 #define CP(x) {fprintf(stderr, "check point %d\n", x);}
@@ -37,7 +38,7 @@
     #define LOGGER_DBG(msg, ...)
 #endif
 
-#if LEVEL_DBG <= LOGGER_LEVEL
+#if LEVEL_TRA <= LOGGER_LEVEL
     #define LOGGER_TRACE(line, msg)                                                \
     do {                                                                              \
         fprintf(stderr, "TRACE: %d --> ", line ); \

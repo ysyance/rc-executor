@@ -1,26 +1,7 @@
-#include <iostream>
-#include <fstream>
-#include <unordered_map>
-#include <string>
-
-#include "antlr4-runtime.h"
-
-#include "rc_helper.h"
-#include "rc_logger.h"
-#include "rc_exception.h"
-#include "rc_innerdata.h"
-#include "RCdataLexer.h"
-#include "RCdataParser.h"
-#include "RCdataGenerator.h"
-#include "RCcodeLexer.h"
-#include "RCcodeParser.h"
-#include "RCcodeGenerator.h"
-#include "RCRuntimeModel.h"
 #include "RCInterpreter.h"
 
 
-using namespace antlr4;
-using namespace antlr4::tree;
+
 
 
 

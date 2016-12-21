@@ -256,4 +256,5 @@ public:
 	std::unordered_map<std::string, int> &constIndexMap;	// the index of all the constants in addr space 
 	std::unordered_map<std::string, int> &funcMap;  	    // all library function map to check if designated function is existed
 
+	// std::unordered_map<std::string, CodeModel> &progList; 	// <programName, code>
 };
